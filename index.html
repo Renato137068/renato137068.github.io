@@ -1,0 +1,1727 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FinançasPro — Controle Financeiro Inteligente</title>
+
+<!-- SEO & Compartilhamento -->
+<meta name="description" content="Controle financeiro inteligente com metas, orçamento, gamificação e sincronização na nuvem. Gratuito e sem anúncios.">
+<meta name="author" content="FinançasPro">
+<meta property="og:title" content="FinançasPro — Controle Financeiro Inteligente">
+<meta property="og:description" content="Controle total das suas finanças em um só lugar. Metas, orçamento, conquistas e muito mais.">
+<meta property="og:type" content="website">
+
+<!-- PWA -->
+<meta name="theme-color" content="#16a34a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="FinançasPro">
+<meta name="mobile-web-app-capable" content="yes">
+<!-- ── Content Security Policy — mitiga XSS ── -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; connect-src 'self' https://nubvlksibmpryltkfpei.supabase.co wss://nubvlksibmpryltkfpei.supabase.co https://api.bcb.gov.br https://brasilapi.com.br https://open.er-api.com https://api.exchangerate-api.com https://api.coingecko.com; img-src 'self' data: https:; font-src 'self' data: https://fonts.gstatic.com; frame-src 'none'; object-src 'none'; base-uri 'self';">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
+
+<!-- Tipografia profissional -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<!-- Estilo -->
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/investimentos-avancado.css">
+</head>
+<body>
+  <!-- SPLASH SCREEN -->
+  <div id="splash-screen" aria-hidden="true">
+    <img src="icons/logo.svg" alt="" width="72" height="72" class="splash-logo">
+    <div class="splash-title">FinançasPro</div>
+    <div class="splash-sub">Controle financeiro inteligente</div>
+    <div class="splash-spinner"></div>
+  </div>
+
+  <a href="#main-content" class="skip-link">Pular para conteúdo principal</a>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo"><img src="icons/logo.svg" alt="FinançasPro" width="64" height="64"></div>
+    <div class="login-title">FinançasPro</div>
+    <div class="login-sub">Seu controle financeiro inteligente</div>
+    <div class="login-tabs">
+      <button class="login-tab active" onclick="setLoginTab('entrar',event)">Entrar</button>
+      <button class="login-tab" onclick="setLoginTab('cadastrar',event)">Cadastrar</button>
+    </div>
+    <input type="email" id="login-email" class="login-input" placeholder="Seu email">
+    <input type="password" id="login-senha" class="login-input" placeholder="Senha (min. 6 caracteres)">
+    <button class="login-btn" id="login-btn-submit" onclick="loginComEmail()">Entrar</button>
+    <div class="login-divider">ou</div>
+    <button class="login-google" onclick="loginComGoogle()">
+      <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.2l6.8-6.8C35.8 2.2 30.2 0 24 0 14.7 0 6.7 5.4 2.7 13.3l7.9 6.1C12.5 13 17.8 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17z"/><path fill="#FBBC05" d="M10.6 28.6A14.8 14.8 0 0 1 9.5 24c0-1.6.3-3.2.7-4.6l-7.9-6.1A23.9 23.9 0 0 0 0 24c0 3.9.9 7.5 2.7 10.7l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.2 0 11.4-2 15.2-5.5l-7.5-5.8c-2 1.4-4.6 2.3-7.7 2.3-6.2 0-11.5-4.2-13.4-9.8l-7.9 6.1C6.7 42.6 14.7 48 24 48z"/></svg>
+      Continuar com Google
+    </button>
+    <div id="login-msg" class="login-msg"></div>
+    <div class="login-footer">Seus dados ficam protegidos e criptografados</div>
+    <button class="login-btn" onclick="usarSemConta()" style="background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;margin-top:-4px;">
+      Usar sem conta (dados locais)
+    </button>
+  </div>
+</div>
+
+<!-- ACHIEVEMENT OVERLAY + POPUP -->
+<div id="achievement-overlay" onclick="closeAchievementPopup()"></div>
+<div id="achievement-popup">
+  <div class="popup-icon" id="ach-popup-icon">🏆</div>
+  <div class="popup-badge">Conquista Desbloqueada!</div>
+  <h2 id="ach-popup-name">Nome</h2>
+  <p id="ach-popup-desc">Descrição</p>
+  <button class="popup-btn" onclick="closeAchievementPopup()">Incrível! Continuar 🎉</button>
+</div>
+
+<!-- TOAST -->
+<div id="toast-container" aria-live="polite" aria-atomic="false" role="region" aria-label="Notificações"></div>
+
+<!-- MODAL DIALOG UNIVERSAL -->
+<div id="fp-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="fp-modal-title" class="fp-modal-overlay hidden">
+  <div class="fp-modal-box">
+    <div class="fp-modal-icon" id="fp-modal-icon">⚠️</div>
+    <div class="fp-modal-title" id="fp-modal-title"></div>
+    <div class="fp-modal-msg" id="fp-modal-msg"></div>
+    <input type="text" id="fp-modal-input" class="form-control fp-modal-input" style="display:none;"
+      onkeydown="if(event.key==='Enter') fpModalOk()">
+    <div class="fp-modal-actions">
+      <button id="fp-modal-cancel" class="btn btn-outline" onclick="fpModalCancel()" style="display:none;">Cancelar</button>
+      <button id="fp-modal-ok" class="btn btn-primary" onclick="fpModalOk()">OK</button>
+    </div>
+  </div>
+</div>
+
+<!-- TRIAL BANNER -->
+
+<!-- PWA INSTALL BANNER -->
+<div id="pwa-install-banner" style="display:none;position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:8000;background:#1e293b;color:#fff;border-radius:16px;padding:12px 18px;gap:12px;align-items:center;box-shadow:0 8px 32px rgba(0,0,0,.3);max-width:340px;width:90%;">
+  <span style="font-size:1.4rem;">📲</span>
+  <div style="flex:1;">
+    <div style="font-size:.85rem;font-weight:700;">Instalar FinançasPro</div>
+    <div style="font-size:.75rem;opacity:.7;">Acesse direto da sua home screen</div>
+  </div>
+  <button onclick="instalarPWA()" style="background:#16a34a;color:#fff;border:none;border-radius:10px;padding:7px 14px;font-size:.8rem;font-weight:700;cursor:pointer;">Instalar</button>
+  <button onclick="this.parentElement.style.display='none'" style="background:none;border:none;color:#fff;opacity:.5;cursor:pointer;font-size:1.1rem;padding:4px;">✕</button>
+</div>
+
+<!-- TRIAL BLOCK SCREEN (exibido se trial expirar) -->
+<div id="trial-block-screen" style="display:none;position:fixed;inset:0;z-index:9999;background:var(--surface2,#f8fafc);flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:32px;text-align:center;">
+  <div style="font-size:3rem;">⏰</div>
+  <h2 style="color:var(--primary,#16a34a);margin:0;">Seu período gratuito terminou</h2>
+  <p style="color:var(--text-muted,#6b7280);max-width:380px;line-height:1.6;">Continue com acesso completo e mantenha o controle total das suas finanças.</p>
+  <a id="trial-block-btn" href="#" target="_blank" class="btn btn-primary" style="padding:14px 32px;font-size:1rem;font-weight:700;border-radius:12px;text-decoration:none;background:var(--primary,#16a34a);color:#fff;">Ver planos →</a>
+</div>
+
+<!-- ONBOARDING OVERLAY — 3 passos -->
+<div id="onboarding-overlay" class="hidden">
+  <div class="onboarding-card-v2">
+    <div class="onboarding-dots">
+      <div class="onboarding-step-dot active"></div>
+      <div class="onboarding-step-dot"></div>
+      <div class="onboarding-step-dot"></div>
+      <div class="onboarding-step-dot"></div>
+    </div>
+    <div class="ob-big-icon" id="ob-icon">👋</div>
+    <h2 id="ob-title">Bem-vindo ao FinançasPro!</h2>
+    <p id="ob-desc">Controle total das suas finanças em um só lugar. Vamos configurar em 1 minuto.</p>
+    <div id="ob-fields"></div>
+    <button class="btn btn-primary btn-full" id="ob-action" onclick="avancarOnboarding()">Começar</button>
+    <button onclick="fecharOnboarding()" style="background:none;border:none;color:var(--text-muted);font-size:.82rem;cursor:pointer;margin-top:8px;width:100%;padding:6px;">Pular por agora →</button>
+    <p style="text-align:center;font-size:.72rem;color:var(--text-muted);margin-top:6px;">🔒 Seus dados ficam no seu dispositivo. Sem rastreamento.</p>
+  </div>
+</div>
+
+<!-- APP WRAPPER -->
+<div class="app-container" id="app-container" role="main">
+  <a id="main-content"></a>
+
+  <!-- HEADER -->
+  <header class="app-header">
+    <div class="header-top">
+      <div class="header-brand">
+        <span class="logo"><img src="icons/logo.svg" alt="FinançasPro" width="36" height="36" style="border-radius:8px;"></span>
+        <div class="header-brand-text">
+          <h1>FinançasPro</h1>
+          <div class="tagline">Controle · Planejamento · Liberdade Financeira</div>
+        </div>
+      </div>
+      <div class="header-right">
+        <div id="user-info" onclick="" style="display:none;"><div id="user-avatar">?</div><span id="user-name"></span></div>
+        <button id="btn-logout" onclick="logout()" style="display:none;">Sair</button>
+        <div id="trial-badge" class="trial-badge">⏳ <span id="trial-badge-text">100% Gratuito 🎉</span></div>
+        <div class="level-badge" id="hdr-level-badge" title="Seu nível">
+          <span class="level-emoji" id="hdr-level-emoji">🌱</span>
+          <span id="hdr-level-name">Iniciante</span>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <div class="score-pill"><span>💚</span><span id="hdr-score">0</span><span>saúde</span></div>
+          <div class="streak-badge">🔥 <span id="hdr-streak">0</span> dias</div>
+          <button id="dark-mode-toggle" onclick="toggleDarkMode()" title="Modo escuro">🌙</button>
+        </div>
+      </div>
+    </div>
+    <div class="header-stats">
+      <div class="header-stat">
+        <div class="header-stat-label">Receitas</div>
+        <div class="header-stat-value" id="hdr-receitas">R$ 0</div>
+        <div class="header-stat-sub">este mês</div>
+      </div>
+      <div class="header-stat">
+        <div class="header-stat-label">Despesas</div>
+        <div class="header-stat-value" id="hdr-despesas">R$ 0</div>
+        <div class="header-stat-sub">este mês</div>
+      </div>
+      <div class="header-stat">
+        <div class="header-stat-label">Saldo</div>
+        <div class="header-stat-value" id="hdr-saldo" style="color:var(--success);">R$ 0</div>
+        <div class="header-stat-sub" id="hdr-saldo-sub">disponível</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- NAV TABS -->
+  <nav class="nav-tabs" role="tablist" aria-label="Seções do aplicativo">
+    <button class="nav-tab active" onclick="switchTab(event,'dashboard')" data-tab="dashboard" role="tab" aria-label="Dashboard"><span class="tab-icon">🏠</span><span>Início</span></button>
+    <button class="nav-tab" onclick="switchTab(event,'transacoes')" data-tab="transacoes" role="tab" aria-label="Transações"><span class="tab-icon">💸</span><span>Extrato</span></button>
+    <button class="nav-tab" onclick="switchTab(event,'cartoes')" data-tab="cartoes" role="tab" aria-label="Cartões"><span class="tab-icon">💳</span><span>Cartões</span></button>
+      <button class="nav-btn" data-tab="dividas" role="tab" aria-label="Dívidas" onclick="switchTab(event,'dividas')">
+        <span class="nav-icon">💳</span>
+        <span class="nav-label">Dívidas</span>
+      </button>
+      <button class="nav-btn" data-tab="calendario" role="tab" aria-label="Calendário" onclick="switchTab(event,'calendario')">
+        <span class="nav-icon">📅</span>
+        <span class="nav-label">Calendário</span>
+      </button>
+      <button class="nav-btn" data-tab="investimentos" role="tab" aria-label="Investimentos" onclick="switchTab(event,'investimentos')">
+        <span class="nav-icon">📈</span>
+        <span class="nav-label">Invest.</span>
+      </button>
+      <button class="nav-btn" data-tab="trilha" role="tab" aria-label="Trilha de Aprendizado" onclick="switchTab(event,'trilha')">
+        <span class="nav-icon">📚</span>
+        <span class="nav-label">Trilha</span>
+      </button>
+      <button class="nav-btn" data-tab="desafios" role="tab" aria-label="Desafios e Medalhas" onclick="switchTab(event,'desafios')">
+        <span class="nav-icon">🎯</span>
+        <span class="nav-label">Desafios</span>
+      </button>
+      <button class="nav-btn" data-tab="temas" role="tab" aria-label="Temas e Personalização" onclick="switchTab(event,'temas')">
+        <span class="nav-icon">🎨</span>
+        <span class="nav-label">Temas</span>
+      </button>
+      <button class="nav-btn" data-tab="calculadoras" role="tab" aria-label="Calculadoras Financeiras" onclick="switchTab(event,'calculadoras')">
+        <span class="nav-icon">🧮</span>
+        <span class="nav-label">Calc.</span>
+      </button>
+      <button class="nav-btn" data-tab="moedas" role="tab" aria-label="Cotações e Moedas" onclick="switchTab(event,'moedas')">
+        <span class="nav-icon">💱</span>
+        <span class="nav-label">Moedas</span>
+      </button>
+      <button class="nav-btn" data-tab="glossario" role="tab" aria-label="Glossário Financeiro" onclick="switchTab(event,'glossario')">
+        <span class="nav-icon">📖</span>
+        <span class="nav-label">Glossário</span>
+      </button>
+      <button class="nav-btn" data-tab="recorrentes" role="tab" aria-label="Transações Recorrentes" onclick="switchTab(event,'recorrentes')">
+        <span class="nav-icon">🔄</span>
+        <span class="nav-label">Fixas</span>
+      </button>
+      <button class="nav-btn" data-tab="metas" role="tab" aria-label="Metas Financeiras" onclick="switchTab(event,'metas')">
+        <span class="nav-icon">🎯</span>
+        <span class="nav-label">Metas</span>
+      </button>
+      <button class="nav-btn" data-tab="insights" role="tab" aria-label="Insights Financeiros" onclick="switchTab(event,'insights')">
+        <span class="nav-icon">🤖</span>
+        <span class="nav-label">Insights</span>
+      </button>
+      <button class="nav-btn" data-tab="relatorio-mm" role="tab" aria-label="Relatório Multi-Mês" onclick="switchTab(event,'relatorio-mm')">
+        <span class="nav-icon">📊</span>
+        <span class="nav-label">Histórico</span>
+      </button>
+      <button class="nav-btn" data-tab="irpf" role="tab" aria-label="Helper IRPF" onclick="switchTab(event,'irpf')">
+        <span class="nav-icon">📋</span>
+        <span class="nav-label">IRPF</span>
+      </button>
+      <button class="nav-btn" data-tab="open-finance" role="tab" aria-label="Open Finance e PIX" onclick="switchTab(event,'open-finance')">
+        <span class="nav-icon">🏦</span>
+        <span class="nav-label">Open Finance</span>
+      </button>
+    <button class="nav-tab" onclick="switchTab(event,'orcamento')" data-tab="orcamento" role="tab" aria-label="Orçamento"><span class="tab-icon">📊</span><span>Orçamento</span></button>
+    <button class="nav-tab" onclick="switchTab(event,'evolucao')" data-tab="evolucao" role="tab" aria-label="Evolução"><span class="tab-icon">📈</span><span>Evolução</span></button>
+    <button class="nav-tab" onclick="switchTab(event,'simulador')" data-tab="simulador"><span class="tab-icon">🧮</span><span>Simulador</span></button>
+    <button class="nav-tab" onclick="switchTab(event,'conquistas')" data-tab="conquistas" role="tab" aria-label="Conquistas"><span class="tab-icon">🏆</span><span>Conquistas</span></button>
+    <button class="nav-tab" onclick="switchTab(event,'configuracoes')" data-tab="configuracoes" role="tab" aria-label="Configurações"><span class="tab-icon">⚙️</span><span>Config</span></button>
+  </nav>
+
+  <!-- TAB: DASHBOARD -->
+  <div id="tab-dashboard" class="tab-panel active">
+    <div id="alertas-container"></div>
+    <div id="sync-status-indicator" class="sync-status-badge sync-idle" style="margin-bottom:8px;cursor:pointer;" onclick="flushOfflineQueue ? flushOfflineQueue() : null" title="Clique para sincronizar">💾 Local</div>
+    <div id="mini-insights" style="display:none;" class="mini-insight-banner"></div>
+
+    <!-- P3.1 · Dica do Dia -->
+    <div id="dica-do-dia-card" class="dica-card" style="display:none;">
+      <div class="dica-header">
+        <span class="dica-badge">💡 Dica do Dia</span>
+        <button class="dica-prox-btn" onclick="proximaDica()" aria-label="Próxima dica">→</button>
+      </div>
+      <div id="dica-texto" class="dica-texto"></div>
+      <div class="dica-footer">
+        <span id="dica-categoria" class="dica-cat-tag"></span>
+        <button class="btn btn-sm btn-ghost" onclick="switchTab(null,'glossario')">📖 Glossário</button>
+      </div>
+    </div>
+
+    <div id="retention-notice" class="hidden">
+      <div class="notice-icon" id="ret-icon">⚡</div>
+      <div class="notice-body">
+        <div class="notice-title" id="ret-title">Meta diária pendente!</div>
+        <div class="notice-sub" id="ret-sub">Registre pelo menos 1 transação hoje para manter sua sequência.</div>
+      </div>
+      <button class="notice-cta" onclick="document.getElementById('tx-desc').focus();showRetentionNotice(false)">Registrar agora</button>
+    </div>
+
+    <div class="card quick-entry">
+      <div class="card-header">
+        <div class="card-title">⚡ Lançamento Rápido</div>
+        <div id="limit-info-badge" style="font-size:.78rem;"></div>
+      </div>
+      <div class="tipo-toggle" style="margin-bottom:12px;">
+        <button class="tipo-btn active-receita" id="btn-receita" onclick="setTipo('receita')">💚 Receita</button>
+        <button class="tipo-btn" id="btn-despesa" onclick="setTipo('despesa')">💸 Despesa</button>
+      </div>
+      <div class="entry-grid">
+        <div class="form-group autocomplete-wrap">
+          <label class="form-label">Descrição</label>
+          <input type="text" id="tx-desc" class="form-control" placeholder="Ex: Salário, Supermercado..." maxlength="80" oninput="onDescInput(this.value)" autocomplete="off">
+          <div id="autocomplete-list" class="autocomplete-list" style="display:none;"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Valor (R$)</label>
+          <input type="number" id="tx-valor" class="form-control" placeholder="0,00" min="0.01" step="0.01">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Data</label>
+          <input type="date" id="tx-data" class="form-control">
+        </div>
+      </div>
+      <button class="quick-entry-toggle" id="quick-entry-toggle-btn" onclick="toggleQuickEntry()">▼ Mais opções</button>
+      <div id="quick-entry-extra" class="quick-entry-extra">
+      <div class="quick-entry-inner">
+      <div class="entry-row-2">
+        <div class="form-group">
+          <label class="form-label" style="display:flex;justify-content:space-between;align-items:center;">Categoria <a href="#" onclick="novaCategoria();return false;" style="font-size:.72rem;color:var(--primary);font-weight:600;text-decoration:none;">+ Nova</a></label>
+          <select id="tx-categoria" class="form-control"><option value="">Selecionar...</option></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Recorrência</label>
+          <select id="tx-recorrencia" class="form-control">
+            <option value="unica">Única</option>
+            <option value="mensal">Mensal</option>
+            <option value="semanal">Semanal</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tag</label>
+          <input type="text" id="tx-tag" class="form-control" placeholder="Ex: trabalho, casa">
+        </div>
+      </div>
+      <div class="entry-row-2" id="tx-extra-row">
+        <div class="form-group" id="tx-conta-group">
+          <label class="form-label">Conta</label>
+          <select id="tx-conta" class="form-control"><option value="">Sem conta</option></select>
+        </div>
+        <div class="form-group" id="tx-cartao-group" style="display:none;">
+          <label class="form-label">Cartão</label>
+          <select id="tx-cartao" class="form-control" onchange="onCartaoChange()"><option value="">Sem cartão</option></select>
+        </div>
+        <div class="form-group" id="tx-parcelas-group" style="display:none;">
+          <label class="form-label">Parcelar em</label>
+          <select id="tx-parcelas" class="form-control">
+            <option value="1">À vista</option>
+            <option value="2">2x</option><option value="3">3x</option><option value="4">4x</option>
+            <option value="5">5x</option><option value="6">6x</option><option value="7">7x</option>
+            <option value="8">8x</option><option value="9">9x</option><option value="10">10x</option>
+            <option value="11">11x</option><option value="12">12x</option>
+          </select>
+        </div>
+      </div>
+      </div>
+      </div>
+      <!-- P1.9 — Edit mode banner -->
+      <div id="edit-mode-banner" class="edit-mode-banner" style="display:none;">
+        ✏️ <strong>Modo edição</strong> — altere os campos e clique em Salvar edição.
+        <button onclick="limparForm()" class="edit-cancel-btn">✕ Cancelar</button>
+      </div>
+      <div class="entry-actions">
+        <button class="btn btn-primary" id="btn-salvar" onclick="adicionarTransacao()" style="flex:1;"><span id="btn-salvar-txt">+ Adicionar</span></button>
+        <button class="btn btn-outline btn-sm" onclick="limparForm()">Limpar</button>
+      </div>
+    </div>
+
+    <div class="card daily-goal-card">
+      <div class="daily-goal-header">
+        <div class="daily-goal-title">🎯 Meta de Hoje</div>
+        <div class="daily-goal-badge pending" id="goal-badge">Pendente</div>
+      </div>
+      <div class="daily-goal-desc" id="goal-desc">Registre 1 transação hoje para manter sua sequência e ganhar XP.</div>
+      <div class="daily-goal-progress">
+        <div class="daily-goal-bar"><div class="daily-goal-fill" id="goal-fill" style="width:0%"></div></div>
+        <div class="daily-goal-pts" id="goal-pts">0 / 1 hoje</div>
+      </div>
+    </div>
+
+    <div class="patrimonio-card">
+      <div class="patrimonio-label">Patrimônio Líquido</div>
+      <div class="patrimonio-valor" id="pat-valor">R$ 0,00</div>
+      <div class="patrimonio-breakdown">
+        <div class="pat-item"><strong id="pat-saldo">R$ 0,00</strong>Saldo contas</div>
+        <div class="pat-item"><strong id="pat-invest">R$ 0,00</strong>Investimentos</div>
+        <div class="pat-item"><strong id="pat-dividas">R$ 0,00</strong>Dívidas</div>
+      </div>
+    </div>
+
+    <div class="projecao-card" id="projecao-card" style="display:none;">
+      <div class="projecao-label">Projeção para fim do mês</div>
+      <div class="projecao-valor" id="projecao-valor">R$ 0,00</div>
+      <div class="projecao-detalhe" id="projecao-detalhe">Baseado nas suas recorrências</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">📊 Resumo do Mês</div>
+        <div class="month-nav">
+          <button onclick="mudarMes(-1)">‹</button>
+          <span class="month-label" id="mes-label">—</span>
+          <button onclick="mudarMes(1)">›</button>
+        </div>
+      </div>
+      <div class="summary-grid">
+        <div class="summary-card receita"><div class="summary-label">Receitas</div><div class="summary-value" id="sum-receita">R$ 0,00</div><div class="summary-sub" id="sum-receita-qtd">0 transações</div></div>
+        <div class="summary-card despesa"><div class="summary-label">Despesas</div><div class="summary-value" id="sum-despesa">R$ 0,00</div><div class="summary-sub" id="sum-despesa-qtd">0 categorias</div></div>
+        <div class="summary-card saldo" id="sum-saldo-card"><div class="summary-label">Saldo</div><div class="summary-value" id="sum-saldo">R$ 0,00</div><div class="summary-sub" id="sum-saldo-sub">disponível</div></div>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center;margin-top:4px;">
+        <div style="flex:1;">
+          <div style="display:flex;justify-content:space-between;font-size:.75rem;color:var(--text-muted);margin-bottom:4px;"><span>Taxa de poupança</span><span id="taxa-poupanca-val">0%</span></div>
+          <div class="progress-bar"><div class="progress-fill" id="taxa-poupanca-bar" style="width:0%"></div></div>
+        </div>
+        <div style="font-size:.75rem;color:var(--text-muted);text-align:right;">Meta: <strong id="meta-poupanca-display">20%</strong></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">🏅 Saúde Financeira</div>
+        <div id="score-total" style="font-size:1.6rem;font-weight:800;color:var(--primary);">0 pts</div>
+      </div>
+      <div id="score-grade" style="text-align:center;padding:8px;background:var(--primary-light);border-radius:var(--radius-sm);margin-bottom:14px;font-weight:700;font-size:.9rem;color:var(--primary);"></div>
+      <div class="score-breakdown" id="score-breakdown"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><div class="card-title">💡 Insights Personalizados</div></div>
+      <div class="insights-list" id="insights-list">
+        <div class="insight-item info"><span class="insight-icon">📊</span><span class="insight-text">Registre suas primeiras transações para ver insights do seu perfil financeiro.</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">🎯 Minhas Metas</div>
+        <button class="btn btn-sm btn-primary" onclick="toggleMetaForm()">+ Nova Meta</button>
+      </div>
+      <div id="meta-form-wrap" style="display:none;">
+        <div class="meta-form">
+          <div style="display:grid;grid-template-columns:2fr 1fr;gap:8px;margin-bottom:8px;">
+            <div class="form-group" style="margin:0;"><label class="form-label">Nome da meta</label><input type="text" id="meta-nome" class="form-control" placeholder="Ex: Viagem, Carro, Reserva de emergencia"></div>
+            <div class="form-group" style="margin:0;"><label class="form-label">Ícone</label><input type="text" id="meta-icon" class="form-control" placeholder="🎯" maxlength="2"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px;">
+            <div class="form-group" style="margin:0;"><label class="form-label">Valor alvo (R$)</label><input type="number" id="meta-alvo" class="form-control" placeholder="5000"></div>
+            <div class="form-group" style="margin:0;"><label class="form-label">Já tenho (R$)</label><input type="number" id="meta-atual" class="form-control" placeholder="0"></div>
+            <div class="form-group" style="margin:0;"><label class="form-label">Prazo</label><input type="month" id="meta-prazo" class="form-control"></div>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-primary" style="flex:1;" onclick="salvarMeta()">Salvar Meta</button>
+            <button class="btn btn-outline" onclick="toggleMetaForm()">Cancelar</button>
+          </div>
+        </div>
+      </div>
+      <div id="metas-lista"></div>
+    </div><!-- /card metas -->
+  </div><!-- /tab-dashboard -->
+
+  <!-- TAB: TRANSACOES -->
+  <div id="tab-transacoes" class="tab-panel">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">💳 Extrato</div>
+        <button class="btn btn-sm btn-outline" onclick="exportarCSV()">📥 CSV</button>
+      </div>
+      <div class="tx-filters">
+        <button class="filter-btn active" onclick="setFiltro('todos')">Todos</button>
+        <button class="filter-btn" onclick="setFiltro('receita')">💚 Receitas</button>
+        <button class="filter-btn" onclick="setFiltro('despesa')">💸 Despesas</button>
+        <select id="tx-mes-filtro" class="form-control" onchange="renderTransacoes()" style="height:36px;padding:0 8px;font-size:.82rem;max-width:140px;flex-shrink:0;"><option value="">Todos os meses</option></select>
+        <div class="search-wrap"><input type="text" id="tx-search" class="form-control" placeholder="🔍 Buscar..." oninput="renderTransacoes()" style="padding:6px 12px;height:36px;" aria-label="Buscar transações"></div>
+        <button class="btn btn-outline btn-sm" onclick="toggleFiltrosAvancados()" aria-label="Filtros avançados" title="Filtros avançados" style="position:relative;">
+          ⚙️ Filtros <span id="filtros-badge" class="filtros-badge" style="display:none;">0</span>
+        </button>
+      </div>
+      <!-- P2.6 — Painel de filtros avançados -->
+      <div id="filtros-avancados-painel" style="display:none;" class="filtros-avancados-painel">
+        <div class="filtros-grid">
+          <div class="form-group">
+            <label class="form-label">Categoria</label>
+            <select id="tx-filtro-cat" class="form-control" onchange="setFiltroAvancado('categoria',this.value)" aria-label="Filtrar por categoria">
+              <option value="">Todas</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Conta</label>
+            <select id="tx-filtro-conta" class="form-control" onchange="setFiltroAvancado('conta',this.value)" aria-label="Filtrar por conta">
+              <option value="">Todas</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tag</label>
+            <input type="text" id="tx-filtro-tag" class="form-control" placeholder="Ex: trabalho" oninput="setFiltroAvancado('tag',this.value)" aria-label="Filtrar por tag">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Valor mín. (R$)</label>
+            <input type="number" id="tx-filtro-valor-min" class="form-control" placeholder="0" min="0" oninput="setFiltroAvancado('valorMin',this.value)" aria-label="Valor mínimo">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Valor máx. (R$)</label>
+            <input type="number" id="tx-filtro-valor-max" class="form-control" placeholder="9999" min="0" oninput="setFiltroAvancado('valorMax',this.value)" aria-label="Valor máximo">
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:8px;">
+          <button class="btn btn-outline btn-sm" onclick="limparFiltrosAvancados()">✕ Limpar filtros</button>
+          <button class="btn btn-outline btn-sm" onclick="exportarCSVFiltrado()">📥 Exportar filtrado</button>
+        </div>
+      </div>
+      <div class="tx-list" id="tx-list"></div>
+      <div id="tx-pagination" style="margin-top:12px;text-align:center;display:none;">
+        <button class="btn btn-sm btn-outline" id="tx-load-more" onclick="loadMoreTx()">Ver mais</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: ORCAMENTO -->
+  <div id="tab-orcamento" class="tab-panel">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">📊 Orçamento por Categoria</div>
+        <div id="orcamento-mes-label" style="font-size:.85rem;color:var(--text-muted);"></div>
+      </div>
+      <div id="orcamento-list" class="budget-list"></div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">⚙️ Definir Limites</div>
+        <div id="orcamento-count-badge" style="font-size:.75rem;color:var(--text-muted);"></div>
+      </div>
+      <div id="orcamento-form-area">
+        <div class="entry-grid" style="margin-bottom:12px;">
+          <div class="form-group">
+            <label class="form-label">Categoria</label>
+            <select id="orc-categoria" class="form-control"><option value="">Selecionar...</option></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Limite (R$)</label>
+            <input type="number" id="orc-limite" class="form-control" placeholder="500" min="1">
+          </div>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="salvarOrcamento()">💾 Salvar Limite</button>
+      </div>
+    </div>
+    <!-- P2.4 — Método 50/30/20 -->
+    <div class="card" style="margin-top:16px;">
+      <div class="card-header">
+        <div class="card-title">⚖️ Regra 50/30/20</div>
+        <a href="#" onclick="mostrarInfo5030();return false;" style="font-size:.75rem;color:var(--primary);">O que é isso?</a>
+      </div>
+      <p style="font-size:.8rem;color:var(--text-muted);margin-bottom:14px;">
+        Uma metodologia simples: <strong>50%</strong> para necessidades, <strong>30%</strong> para desejos e <strong>20%</strong> para poupança e dívidas.
+      </p>
+      <div id="orc-5030-panel" class="orc-5030-panel"></div>
+    </div>
+    <!-- P2.10 — Narrativa automática -->
+    <div class="card" style="margin-top:16px;">
+      <div class="card-title" style="margin-bottom:12px;">📝 Análise do Mês</div>
+      <div id="narrativa-mensal" class="narrativa-container" style="display:none;"></div>
+    </div>
+  </div>
+
+  <!-- TAB: CARTOES -->
+  <div id="tab-cartoes" class="tab-panel">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">💳 Meus Cartões</div>
+        <button class="btn btn-sm btn-primary" onclick="abrirModalCartao()">+ Adicionar</button>
+      </div>
+      <div id="cartoes-lista" class="cartoes-grid"></div>
+    </div>
+    <div class="card" id="parcelamentos-global-card" style="margin-bottom:0;">
+      <div class="card-header">
+        <div class="card-title">🗂️ Parcelamentos Ativos</div>
+        <div id="parcelas-total-label" style="font-size:.78rem;color:var(--text-muted);"></div>
+      </div>
+      <div id="parcelas-global-lista"></div>
+    </div>
+    <div class="card" id="cartao-detalhe-card" style="display:none;">
+      <div class="card-header">
+        <div class="card-title" id="cartao-detalhe-titulo">Fatura Atual</div>
+        <div id="cartao-detalhe-badge" class="cartao-badge cartao-badge-ok"></div>
+      </div>
+      <div class="cartao-visual" id="cartao-visual-display">
+        <div class="cartao-bandeira" id="cartao-vis-bandeira">Visa</div>
+        <div class="cartao-nome-vis" id="cartao-vis-nome">Meu Cartão</div>
+        <div class="cartao-limite-row">
+          <div class="cartao-limite-item">Fatura atual<strong id="cartao-vis-fatura">R$ 0,00</strong></div>
+          <div class="cartao-limite-item">Limite dispon.<strong id="cartao-vis-disponivel">R$ 0,00</strong></div>
+          <div class="cartao-limite-item">Vencimento<strong id="cartao-vis-vencimento">Dia 10</strong></div>
+        </div>
+        <div class="cartao-progress-bar"><div class="cartao-progress-fill" id="cartao-progress-fill" style="width:0%"></div></div>
+      </div>
+      <div style="margin-top:12px;">
+        <div class="card-title" style="font-size:.85rem;margin-bottom:8px;">Parcelas em aberto</div>
+        <div id="parcelas-lista" class="parcelas-list"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">📊 Gastos no Cartão (mês)</div></div>
+      <div id="cartao-gastos-mes"></div>
+    </div>
+  </div>
+
+  <!-- TAB: EVOLUCAO -->
+  <div id="tab-evolucao" class="tab-panel">
+    <div class="evolucao-tabs">
+      <button class="evolucao-tab active" onclick="switchEvolucao('graficos',this)">📊 Gráficos</button>
+      <button class="evolucao-tab" onclick="switchEvolucao('historico',this)">📅 Histórico</button>
+      <button class="evolucao-tab" onclick="switchEvolucao('patrimonio',this)">💰 Patrimônio</button>
+    </div>
+    <div id="evolucao-graficos">
+      <div class="chart-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><div class="chart-title" style="margin-bottom:0;">📊 Receitas vs Despesas</div><button class="btn btn-sm btn-outline" onclick="gerarRelatorioMensal()" style="font-size:.72rem;">📄 Relatório</button></div>
+        <div class="chart-periodo">
+          <button class="chart-periodo-btn active" onclick="setChartPeriodo(3,this)">3 meses</button>
+          <button class="chart-periodo-btn" onclick="setChartPeriodo(6,this)">6 meses</button>
+          <button class="chart-periodo-btn" onclick="setChartPeriodo(12,this)">12 meses</button>
+        </div>
+        <div class="chart-canvas-wrap"><canvas id="chart-recdesp"></canvas></div>
+      </div>
+      <div class="chart-card" style="margin-top:16px;">
+        <div class="chart-title">🥧 Gastos por Categoria</div>
+        <div class="chart-canvas-wrap" style="height:260px;"><canvas id="chart-categorias"></canvas></div>
+      </div>
+      <div class="chart-card" style="margin-top:16px;">
+        <div class="chart-title">📈 Evolução do Saldo</div>
+        <div class="chart-canvas-wrap"><canvas id="chart-saldo"></canvas></div>
+      </div>
+      <!-- P2.9 — Cashflow diário -->
+      <div class="chart-card" style="margin-top:16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <div class="chart-title" style="margin-bottom:0;">💧 Fluxo de Caixa Diário</div>
+          <span style="font-size:.72rem;color:var(--text-muted);">Saldo acumulado dia a dia</span>
+        </div>
+        <div class="chart-canvas-wrap"><canvas id="chart-cashflow"></canvas></div>
+        <div id="cashflow-alerta" class="cashflow-alerta" style="display:none;"></div>
+      </div>
+    </div>
+    <div id="evolucao-historico" style="display:none;">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📅 Histórico Mensal</div>
+          <button class="btn btn-sm btn-outline" onclick="gerarRelatorioMensal()" title="Imprimir/salvar relatório do mês atual">📄 Relatório</button>
+        </div>
+        <div id="retro-list" class="retro-month-grid"></div>
+      </div>
+      <div id="retro-detalhe" class="card hidden">
+        <div class="card-header">
+          <div class="card-title" id="retro-detalhe-titulo">Detalhes</div>
+          <button class="btn btn-sm btn-outline" onclick="document.getElementById('retro-detalhe').classList.add('hidden')">Fechar</button>
+        </div>
+        <div id="retro-detalhe-content"></div>
+      </div>
+    </div>
+    <div id="evolucao-patrimonio" style="display:none;">
+      <div class="chart-card">
+        <div class="chart-title">💰 Patrimônio ao Longo do Tempo</div>
+        <div class="chart-canvas-wrap"><canvas id="chart-patrimonio"></canvas></div>
+      </div>
+      <div class="card" style="margin-top:16px;">
+        <div class="card-title" style="margin-bottom:12px;">Resumo de Contas</div>
+        <div id="contas-resumo-evolucao"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: SIMULADOR -->
+  <div id="tab-simulador" class="tab-panel">
+
+    <!-- TAXAS BANCO CENTRAL -->
+    <div class="card bcb-rates-card">
+      <div class="card-header">
+        <div class="card-title">🏦 Taxas de Referência</div>
+        <span style="font-size:.72rem;color:var(--text-muted);">Banco Central do Brasil · Tempo real</span>
+      </div>
+      <div id="bcb-rates-content" class="bcb-rates-grid">
+        <div style="text-align:center;padding:16px;color:var(--text-muted);font-size:.85rem;">Carregando taxas... ⏳</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><div class="card-title">🧮 Simulador de Juros Compostos</div></div>
+      <div class="sim-grid">
+        <div class="form-group"><label class="form-label">Capital inicial (R$)</label><input type="number" id="sim-capital" class="form-control" placeholder="1000" value="1000"></div>
+        <div class="form-group"><label class="form-label">Aporte mensal (R$)</label><input type="number" id="sim-aporte" class="form-control" placeholder="500" value="500"></div>
+        <div class="form-group"><label class="form-label">Taxa mensal (%)</label><input type="number" id="sim-taxa" class="form-control" placeholder="0.8" value="0.8" step="0.01"></div>
+        <div class="form-group"><label class="form-label">Período (meses)</label><input type="number" id="sim-meses" class="form-control" placeholder="12" value="12" min="1" max="360"></div>
+      </div>
+      <button class="btn btn-primary btn-full" onclick="calcularSimulacao()" style="margin-bottom:16px;">🧮 Simular</button>
+      <div id="sim-result" style="display:none;">
+        <div class="sim-grid">
+          <div class="sim-result"><div class="result-value" id="sim-total">—</div><div class="result-label">Total acumulado</div></div>
+          <div class="sim-result"><div class="result-value" id="sim-rendimento">—</div><div class="result-label">Rendimento puro</div></div>
+          <div class="sim-result"><div class="result-value" id="sim-investido">—</div><div class="result-label">Total investido</div></div>
+          <div class="sim-result"><div class="result-value" id="sim-retorno">—</div><div class="result-label">Retorno (%)</div></div>
+        </div>
+        <div id="sim-tabela-wrap" style="margin-top:16px;overflow-x:auto;max-height:300px;overflow-y:auto;"></div>
+      </div>
+    </div><!-- /card simulador -->
+  </div><!-- /tab-simulador -->
+
+  <!-- TAB: CONQUISTAS -->
+  <div id="tab-conquistas" class="tab-panel">
+    <div class="level-progress-section">
+      <div class="level-progress-header">
+        <div class="level-big-emoji" id="level-big-emoji">🌱</div>
+        <div class="level-info"><h3 id="level-big-name">Iniciante</h3><div class="level-sub" id="level-big-sub">Começando sua jornada financeira</div></div>
+      </div>
+      <div class="level-xp-track">
+        <div class="level-xp-track-bar"><div class="level-xp-track-fill" id="level-xp-fill" style="width:0%"></div></div>
+        <div class="level-xp-labels"><span id="level-xp-current">0 XP</span><span id="level-xp-next">Próximo nível: 100 XP</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="missions-header">
+        <div class="missions-title">⚡ Missões Diárias</div>
+        <div class="missions-reset" id="missions-daily-reset">Reinicia à meia-noite</div>
+      </div>
+      <div id="daily-missions-list"></div>
+    </div>
+    <div class="card" style="margin-top:12px;">
+      <div class="missions-header">
+        <div class="missions-title">📅 Missões Semanais</div>
+        <div class="missions-reset" id="missions-weekly-reset">Reinicia todo domingo</div>
+      </div>
+      <div id="weekly-missions-list"></div>
+    </div>
+    <div class="card" style="margin-top:12px;">
+      <div class="card-title" style="margin-bottom:16px;">🏆 Conquistas</div>
+      <div class="achievements-grid" id="achievements-preview"></div>
+    </div>
+  </div>
+
+  <!-- TAB: CONFIG -->
+  <div id="tab-configuracoes" class="tab-panel">
+    <div class="card">
+      <div class="card-title" style="margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;">
+        <span>👤 Perfil e Configurações</span>
+        <button class="btn btn-outline btn-sm" onclick="iniciarTour()" title="Tour guiado">🗺️ Tour</button>
+      </div>
+      <div class="config-section">
+        <div class="config-section-title">Dados pessoais</div>
+        <div class="entry-grid" style="margin-bottom:12px;">
+          <div class="form-group"><label class="form-label">Nome</label><input type="text" id="cfg-nome" class="form-control" placeholder="Seu nome"></div>
+          <div class="form-group"><label class="form-label">Renda mensal (R$)</label><input type="number" id="cfg-renda" class="form-control" placeholder="3000"></div>
+        </div>
+        <div class="entry-grid" style="margin-bottom:12px;">
+          <div class="form-group"><label class="form-label">Meta poupança (%)</label><input type="number" id="cfg-meta-poupanca" class="form-control" placeholder="20"></div>
+          <div class="form-group"><label class="form-label">Limite gastos (%)</label><input type="number" id="cfg-meta-gastos" class="form-control" placeholder="80"></div>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="salvarCfg()">💾 Salvar</button>
+      </div>
+      <hr class="divider">
+      <div class="config-section">
+        <div class="config-section-title">Plano Atual</div>
+        <div class="config-row">
+          <div>
+            <div class="config-label" id="cfg-plano-nome">Plano Gratuito — acesso completo ✓</div>
+            <div class="config-sub">Transações registradas: <span id="cfg-tx-count">0</span></div>
+          </div>
+        </div>
+      </div>
+      <hr class="divider">
+      <div class="config-section">
+        <div class="config-section-title">Backup e Exportação</div>
+        <div class="backup-actions">
+          <button class="btn btn-outline btn-sm" onclick="exportarCSV()">📥 CSV</button>
+          <button class="btn btn-outline btn-sm" onclick="exportarJSON()">💾 Backup JSON</button>
+        <button class="btn btn-outline" onclick="gerarRelatorioAtual()" style="width:100%;margin-top:8px;">📄 Relatório PDF mensal</button>
+          <label class="btn btn-outline btn-sm" style="cursor:pointer;">📤 Importar <input type="file" accept=".json" onchange="importarJSON(event)" style="display:none;"></label>
+        </div>
+      </div>
+      <hr class="divider">
+      <div class="config-section">
+        <div class="config-section-title">☁️ Cloud Sync</div>
+        <div id="offline-queue-badge" class="offline-queue-badge" style="display:none;margin-bottom:8px;"></div>
+        <button id="btn-instalar-pwa" class="btn btn-sm btn-primary" style="display:none;margin-bottom:8px;" onclick="mostrarInstallPrompt()">📲 Instalar App</button>
+        <div class="config-row">
+          <div><div class="config-label">Sincronizar com a nuvem</div><div class="config-sub">Sincronização ativa com Supabase</div></div>
+          <span style="color:var(--success);font-size:.85rem;">✅ Ativo</span>
+        </div>
+      </div>
+      <hr class="divider">
+      <div class="config-section" id="mfa-config-section">
+        <div class="config-section-title">🔐 Autenticação em 2 Fatores (2FA)</div>
+        <div class="config-row" style="margin-bottom:12px;">
+          <span id="mfa-status-badge" class="mfa-badge mfa-off">⚠️ 2FA Inativo</span>
+        </div>
+        <!-- P2.12 — Notificações -->
+        <div class="settings-section" style="margin-top:16px;">
+          <div class="settings-section-title">🔔 Notificações</div>
+          <div id="notif-config-panel"></div>
+        </div>
+
+        <p style="font-size:.8rem;color:var(--text-muted);margin-bottom:10px;">
+          Adicione uma camada extra de segurança com Google Authenticator ou Authy.
+        </p>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-primary btn-sm" id="mfa-btn-ativar" onclick="iniciarEnrolamentoMFA()">🔒 Ativar 2FA</button>
+          <button class="btn btn-danger btn-sm" id="mfa-btn-desativar" onclick="desativarMFA()" style="display:none;">🗑️ Remover 2FA</button>
+        </div>
+      </div>
+      <hr class="divider">
+      <div class="config-section">
+        <div class="config-section-title">🏦 Minhas Contas</div>
+        <div id="config-contas-list" class="config-contas-grid"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+          <button class="btn btn-outline btn-sm" onclick="abrirModalConta()">+ Adicionar Conta</button>
+        </div>
+      </div>
+      <hr class="divider">
+      <div class="config-section">
+        <div class="config-section-title">💳 Meus Cartões</div>
+        <div id="config-cartoes-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:8px;"></div>
+        <button class="btn btn-outline btn-sm" onclick="abrirModalCartao()">+ Adicionar Cartão</button>
+      </div>
+      <hr class="divider">
+      <div class="config-section">
+        <div class="config-section-title">🏷️ Categorias Personalizadas</div>
+        <button class="btn btn-sm btn-outline" onclick="abrirModalCatCustom()" style="margin-bottom:10px;">+ Nova Categoria</button>
+        <div id="cats-custom-panel"></div>
+        <div id="cat-custom-list" class="cat-custom-list"></div>
+        <div style="display:flex;gap:8px;margin-top:8px;">
+          <input type="text" id="cat-new-nome" class="form-control" placeholder="Nome da categoria" style="flex:1;">
+          <input type="text" id="cat-new-icon" class="form-control" placeholder="🏷️" style="width:60px;">
+          <button class="btn btn-primary btn-sm" onclick="adicionarCategoria()">+</button>
+        </div>
+      </div>
+      <hr class="divider">
+      <div class="config-section">
+        <div class="config-section-title">📥 Importar Extrato (CSV)</div>
+        <span id="csv-banco-detectado" style="display:none;font-size:.75rem;background:var(--primary);color:#fff;padding:2px 8px;border-radius:20px;margin-bottom:8px;"></span>
+        <p style="font-size:.8rem;color:var(--text-muted);margin-bottom:10px;">Importe extratos do Nubank, Inter, Bradesco e outros bancos.</p>
+        <div class="csv-dropzone" id="csv-dropzone" onclick="document.getElementById('csv-file-input').click()">
+          <div class="csv-dropzone-icon">📂</div>
+          <div class="csv-dropzone-text">Clique ou arraste o arquivo CSV</div>
+          <div class="csv-dropzone-sub">Formatos: Nubank, Inter, Bradesco, genérico</div>
+        </div>
+        <input type="file" id="csv-file-input" accept=".csv,.txt" style="display:none;" onchange="importarCSV(event)">
+        <div id="csv-preview-area" style="display:none;margin-top:12px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <div style="font-size:.85rem;font-weight:600;" id="csv-preview-count"></div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-outline btn-sm" onclick="cancelarCSV()">Cancelar</button>
+              <button class="btn btn-primary btn-sm" onclick="confirmarCSV()">Importar Selecionados</button>
+            </div>
+          </div>
+          <div class="csv-preview" id="csv-preview-list"></div>
+        </div>
+      </div>
+      <hr class="divider">
+      <div class="config-section">
+        <div class="config-section-title" style="color:var(--danger);">Zona de Perigo</div>
+        <button class="btn btn-danger btn-sm" onclick="resetarDados()">🗑️ Resetar todos os dados</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CARTAO -->
+  <div id="modal-cartao" class="modal-overlay hidden">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-title" id="modal-cartao-titulo">Novo Cartão</div>
+      <input type="hidden" id="modal-cartao-id">
+      <div class="entry-grid">
+        <div class="form-group"><label class="form-label">Nome do cartão</label><input type="text" id="mc-nome" class="form-control" placeholder="Ex: Nubank, Inter..."></div>
+        <div class="form-group"><label class="form-label">Bandeira</label><select id="mc-bandeira" class="form-control"><option value="Visa">Visa</option><option value="Mastercard">Mastercard</option><option value="Elo">Elo</option><option value="Amex">Amex</option></select></div>
+        <div class="form-group"><label class="form-label">Limite (R$)</label><input type="number" id="mc-limite" class="form-control" placeholder="5000"></div>
+        <div class="form-group"><label class="form-label">Dia de fechamento</label><input type="number" id="mc-fechamento" class="form-control" placeholder="23" min="1" max="31"></div>
+        <div class="form-group"><label class="form-label">Dia de vencimento</label><input type="number" id="mc-vencimento" class="form-control" placeholder="3" min="1" max="31"></div>
+        <div class="form-group"><label class="form-label">Cor</label><select id="mc-cor" class="form-control"><option value="#1e293b">Grafite</option><option value="#7c3aed">Roxo (Nubank)</option><option value="#16a34a">Verde (Inter)</option><option value="#2563eb">Azul (Itaú)</option><option value="#dc2626">Vermelho (Santander)</option></select></div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:16px;">
+        <button class="btn btn-outline" style="flex:1;" onclick="fecharModal('modal-cartao')">Cancelar</button>
+        <button class="btn btn-primary" style="flex:1;" onclick="salvarCartao()">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CONTA -->
+  <div id="modal-conta" class="modal-overlay hidden">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-title" id="modal-conta-titulo">Nova Conta</div>
+      <input type="hidden" id="modal-conta-id">
+      <div class="entry-grid">
+        <div class="form-group"><label class="form-label">Nome da conta</label><input type="text" id="mconta-nome" class="form-control" placeholder="Ex: Nubank, Bradesco..."></div>
+        <div class="form-group"><label class="form-label">Tipo</label><select id="mconta-tipo" class="form-control"><option value="corrente">Conta Corrente</option><option value="poupanca">Poupança</option><option value="investimento">Investimentos</option><option value="digital">Banco Digital</option><option value="carteira">Carteira/Dinheiro</option></select></div>
+        <div class="form-group"><label class="form-label">Saldo inicial (R$)</label><input type="number" id="mconta-saldo" class="form-control" placeholder="0,00" step="0.01"></div>
+        <div class="form-group"><label class="form-label">Ícone</label><select id="mconta-icon" class="form-control"><option value="🏦">🏦 Banco</option><option value="💜">💜 Nubank</option><option value="🧡">🧡 Inter</option><option value="💙">💙 Itaú/Bradesco</option><option value="💚">💚 Digital</option><option value="👛">👛 Carteira</option><option value="📈">📈 Investimento</option></select></div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:16px;">
+        <button class="btn btn-outline" style="flex:1;" onclick="fecharModal('modal-conta')">Cancelar</button>
+        <button class="btn btn-primary" style="flex:1;" onclick="salvarConta()">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- P1.3 — Session Timeout Warning Modal -->
+  <div id="session-timeout-modal" class="modal-overlay session-timeout-overlay" style="display:none;">
+    <div class="modal-sheet session-timeout-sheet">
+      <div class="session-timeout-icon">⏱️</div>
+      <h3 class="session-timeout-title">Sessão prestes a expirar</h3>
+      <p class="session-timeout-body">Sua sessão encerrará em <strong id="session-timeout-countdown">2:00</strong> por inatividade.</p>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:16px;">
+        <button class="btn btn-primary" onclick="continuarSessao()">✅ Continuar sessão</button>
+        <button class="btn btn-outline" onclick="logout()">Sair agora</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- P1.4 — MFA Enrollment Modal -->
+  <div id="mfa-enroll-modal" class="modal-overlay hidden">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-title">🔐 Ativar Autenticação em 2 Fatores</div>
+      <div id="mfa-step-qr">
+        <p style="font-size:.85rem;color:var(--text-muted);margin-bottom:12px;">
+          1. Abra o Google Authenticator ou Authy<br>
+          2. Escaneie o QR Code abaixo<br>
+          3. Digite o código de 6 dígitos gerado
+        </p>
+        <div style="text-align:center;margin:16px 0;">
+          <img id="mfa-qr-img" src="" alt="QR Code 2FA" style="width:180px;height:180px;border:2px solid var(--border);border-radius:10px;padding:8px;">
+        </div>
+        <div style="background:var(--surface-2);border-radius:8px;padding:10px;margin-bottom:14px;text-align:center;">
+          <div style="font-size:.72rem;color:var(--text-muted);margin-bottom:4px;">Código manual (se não conseguir escanear):</div>
+          <code id="mfa-secret" style="font-size:.85rem;letter-spacing:2px;user-select:all;color:var(--primary);font-weight:700;"></code>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Código de verificação (6 dígitos)</label>
+          <input type="text" id="mfa-code-input" class="form-control" placeholder="000000"
+            maxlength="6" inputmode="numeric" style="text-align:center;font-size:1.4rem;letter-spacing:8px;font-weight:700;">
+        </div>
+        <div id="mfa-error-msg" style="color:var(--danger);font-size:.82rem;margin-bottom:8px;display:none;"></div>
+        <div style="display:flex;gap:8px;margin-top:12px;">
+          <button class="btn btn-outline" style="flex:1;" onclick="fecharMFAModal('mfa-enroll-modal')">Cancelar</button>
+          <button class="btn btn-primary" style="flex:1;" onclick="confirmarEnrolamentoMFA()">✅ Verificar e Ativar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── P2.1 DÍVIDAS ──────────────────────────────── -->
+  <div id="tab-dividas" class="tab-panel" role="tabpanel" aria-label="Gestão de Dívidas">
+    <div class="section-header">
+      <h2 class="section-title">💳 Gestão de Dívidas</h2>
+      <button class="btn btn-primary btn-sm" onclick="abrirModalDivida()">+ Nova Dívida</button>
+      <button class="btn btn-outline btn-sm" onclick="gerarRelatorioAtual()" aria-label="Gerar relatório PDF">📄 PDF</button>
+    </div>
+
+    <!-- Método -->
+    <div class="divida-metodo-bar">
+      <button class="divida-metodo-btn active" onclick="setMetodoDivida('bolaneve',this)">⛄ Bola de Neve</button>
+      <button class="divida-metodo-btn" onclick="setMetodoDivida('avalanche',this)">🌊 Avalanche</button>
+    </div>
+
+    <!-- Extra por mês -->
+    <div class="divida-extra-bar">
+      <label for="dividas-extra-input" style="font-size:.85rem;color:var(--text-secondary);">
+        💰 Valor extra/mês para amortização:
+      </label>
+      <div style="display:flex;gap:8px;align-items:center;margin-top:6px;">
+        <input type="number" id="dividas-extra-input" class="form-control" style="max-width:140px;"
+               placeholder="R$ 0,00" min="0" step="50" oninput="atualizarSimulacao()">
+        <span style="font-size:.8rem;color:var(--text-muted);">além dos mínimos</span>
+      </div>
+    </div>
+
+    <!-- Lista de dívidas -->
+    <div id="dividas-panel"></div>
+
+    <!-- Simulação -->
+    <div id="dividas-simulacao" class="divida-sim-card" style="display:none;"></div>
+  </div>
+
+  <!-- Modal nova dívida -->
+  <div id="modal-nova-divida" class="tx-edit-overlay" style="display:none;"
+       role="dialog" aria-modal="true" aria-labelledby="modal-divida-titulo">
+    <div class="tx-edit-sheet">
+      <div class="tx-edit-header">
+        <h3 id="modal-divida-titulo" style="margin:0;font-size:1.1rem;">➕ Nova Dívida</h3>
+        <button class="tx-edit-close-btn" onclick="fecharModalDivida()" aria-label="Fechar">✕</button>
+      </div>
+      <div class="tx-edit-body">
+        <div class="form-group">
+          <label class="form-label" for="divida-nome-input">Nome da dívida</label>
+          <input type="text" id="divida-nome-input" class="form-control" placeholder="Ex: Cartão Nubank, Empréstimo...">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px;">
+          <div class="form-group">
+            <label class="form-label" for="divida-saldo-input">Saldo atual (R$)</label>
+            <input type="number" id="divida-saldo-input" class="form-control" min="0.01" step="0.01" placeholder="0,00">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="divida-taxa-input">Taxa mensal (%)</label>
+            <input type="number" id="divida-taxa-input" class="form-control" min="0" step="0.1" placeholder="Ex: 8,5">
+          </div>
+        </div>
+        <div class="form-group" style="margin-top:8px;">
+          <label class="form-label" for="divida-min-input">Pagamento mínimo/mês (R$)</label>
+          <input type="number" id="divida-min-input" class="form-control" min="0" step="0.01" placeholder="0,00">
+        </div>
+      </div>
+      <div class="tx-edit-footer">
+        <button class="btn btn-outline" style="flex:1;" onclick="fecharModalDivida()">Cancelar</button>
+        <button class="btn btn-primary" style="flex:1;" onclick="salvarNovaDivida()">✅ Adicionar</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── P2.2 CALENDÁRIO ───────────────────────────── -->
+  <div id="tab-calendario" class="tab-panel" role="tabpanel" aria-label="Calendário Financeiro">
+    <div class="section-header">
+      <h2 class="section-title">📅 Calendário Financeiro</h2>
+      <button class="btn btn-primary btn-sm" onclick="abrirModalVencimento()">+ Vencimento</button>
+    </div>
+    <div id="calendario-panel"></div>
+  </div>
+
+  <!-- Modal vencimento -->
+  <div id="modal-vencimento" class="tx-edit-overlay" style="display:none;"
+       role="dialog" aria-modal="true" aria-labelledby="modal-venc-titulo">
+    <div class="tx-edit-sheet">
+      <div class="tx-edit-header">
+        <h3 id="modal-venc-titulo" style="margin:0;font-size:1.1rem;">🔔 Novo Vencimento</h3>
+        <button class="tx-edit-close-btn" onclick="fecharModalVencimento()" aria-label="Fechar">✕</button>
+      </div>
+      <div class="tx-edit-body">
+        <div class="form-group">
+          <label class="form-label" for="venc-desc-input">Descrição</label>
+          <input type="text" id="venc-desc-input" class="form-control" placeholder="Ex: Aluguel, Internet, Cartão...">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px;">
+          <div class="form-group">
+            <label class="form-label" for="venc-dia-input">Dia do mês</label>
+            <input type="number" id="venc-dia-input" class="form-control" min="1" max="31" placeholder="Ex: 10">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="venc-valor-input">Valor (R$) — opcional</label>
+            <input type="number" id="venc-valor-input" class="form-control" min="0" step="0.01" placeholder="0,00">
+          </div>
+        </div>
+      </div>
+      <div class="tx-edit-footer">
+        <button class="btn btn-outline" style="flex:1;" onclick="fecharModalVencimento()">Cancelar</button>
+        <button class="btn btn-primary" style="flex:1;" onclick="salvarVencimento()">✅ Salvar</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── P2.3 INVESTIMENTOS ────────────────────────── -->
+  <div id="tab-investimentos" class="tab-panel" role="tabpanel" aria-label="Investimentos">
+    <div class="section-header">
+      <h2 class="section-title">📈 Investimentos</h2>
+      <button class="btn btn-primary btn-sm" onclick="abrirModalAtivo()">+ Ativo</button>
+    </div>
+    <!-- Panel de Investimentos Avançado (novo módulo) -->
+    <div id="investimentos-avancado-panel"></div>
+    <!-- Panel de Investimentos Legado -->
+    <div id="investimentos-panel" style="display:none;"></div>
+  </div>
+
+  <!-- Modal novo ativo -->
+  <div id="modal-novo-ativo" class="tx-edit-overlay" style="display:none;"
+       role="dialog" aria-modal="true" aria-labelledby="modal-ativo-titulo">
+    <div class="tx-edit-sheet">
+      <div class="tx-edit-header">
+        <h3 id="modal-ativo-titulo" style="margin:0;font-size:1.1rem;">📈 Novo Ativo</h3>
+        <button class="tx-edit-close-btn" onclick="fecharModalAtivo()" aria-label="Fechar">✕</button>
+      </div>
+      <div class="tx-edit-body">
+        <div class="form-group">
+          <label class="form-label" for="inv-nome-input">Nome do ativo</label>
+          <input type="text" id="inv-nome-input" class="form-control" placeholder="Ex: Tesouro Selic 2027, PETR4...">
+        </div>
+        <div class="form-group" style="margin-top:8px;">
+          <label class="form-label" for="inv-classe-sel">Classe</label>
+          <select id="inv-classe-sel" class="form-control">
+            <option value="renda-fixa">🏦 Renda Fixa</option>
+            <option value="acoes">📈 Ações</option>
+            <option value="fiis">🏢 FIIs</option>
+            <option value="tesouro">🇧🇷 Tesouro Direto</option>
+            <option value="criptomoedas">₿ Criptomoedas</option>
+            <option value="internacional">🌍 Internacional</option>
+            <option value="outros">📦 Outros</option>
+          </select>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px;">
+          <div class="form-group">
+            <label class="form-label" for="inv-vinv-input">Valor investido (R$)</label>
+            <input type="number" id="inv-vinv-input" class="form-control" min="0" step="0.01" placeholder="0,00">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="inv-vatual-input">Valor atual (R$)</label>
+            <input type="number" id="inv-vatual-input" class="form-control" min="0" step="0.01" placeholder="= investido">
+          </div>
+        </div>
+        <div class="form-group" style="margin-top:8px;">
+          <label class="form-label" for="inv-renda-input">Rentabilidade anual (% a.a.) — opcional</label>
+          <input type="number" id="inv-renda-input" class="form-control" min="0" step="0.01" placeholder="Ex: 12,5">
+        </div>
+      </div>
+      <div class="tx-edit-footer">
+        <button class="btn btn-outline" style="flex:1;" onclick="fecharModalAtivo()">Cancelar</button>
+        <button class="btn btn-primary" style="flex:1;" onclick="salvarNovoAtivo()">✅ Adicionar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════ P3 TAB PANELS ═══════════════════════ -->
+
+  <!-- P3.2 · Trilha de Aprendizado -->
+  <div id="tab-trilha" class="tab-panel" role="tabpanel" aria-label="Trilha de Aprendizado">
+    <div class="section-header">
+      <h2 class="section-title">📚 Trilha de Aprendizado</h2>
+      <div id="trilha-xp-badge" class="xp-badge"></div>
+    </div>
+    <div id="trilha-level-bar" class="trilha-level-bar"></div>
+    <div id="trilha-panel"></div>
+    <!-- Modal conteúdo do módulo -->
+    <div id="trilha-modal" class="tx-edit-overlay" style="display:none;"
+         role="dialog" aria-modal="true" aria-labelledby="trilha-modal-titulo">
+      <div class="tx-edit-sheet trilha-modal-sheet">
+        <div class="tx-edit-header">
+          <h3 id="trilha-modal-titulo" style="margin:0;font-size:1.05rem;">📚 Módulo</h3>
+          <button class="tx-edit-close-btn" onclick="document.getElementById('trilha-modal').style.display='none'" aria-label="Fechar">✕</button>
+        </div>
+        <div class="tx-edit-body" id="trilha-modal-body"></div>
+        <div class="tx-edit-footer">
+          <button class="btn btn-primary" id="trilha-modal-concluir-btn" onclick="">✅ Concluir Módulo (+XP)</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- P3.4+P3.5 · Desafios e Medalhas -->
+  <div id="tab-desafios" class="tab-panel" role="tabpanel" aria-label="Desafios e Medalhas">
+    <div class="section-header">
+      <h2 class="section-title">🎯 Desafios & Medalhas</h2>
+      <div id="desafios-mes-badge" class="desafios-mes-badge"></div>
+    </div>
+    <div id="desafios-panel"></div>
+  </div>
+
+  <!-- P3.6+P3.7 · Temas e Wrapped -->
+  <div id="tab-temas" class="tab-panel" role="tabpanel" aria-label="Temas e Personalização">
+    <div class="section-header">
+      <h2 class="section-title">🎨 Temas & Personalização</h2>
+      <div id="fp-coins-badge" class="coins-badge"></div>
+    </div>
+    <div id="temas-panel"></div>
+    <!-- Sub-seção Wrapped -->
+    <div class="temas-section" style="margin-top:24px;">
+      <h3 class="temas-section-title">🎊 Seu Ano em Números</h3>
+      <p class="temas-desc">Veja um resumo completo da sua jornada financeira no ano.</p>
+      <button class="btn btn-primary" onclick="gerarWrapped()">🎊 Gerar Wrapped Financeiro</button>
+      <div id="wrapped-resultado" style="margin-top:16px;"></div>
+    </div>
+    <!-- Sub-seção Convite -->
+    <div class="temas-section" style="margin-top:24px;">
+      <h3 class="temas-section-title">👥 Indicar Amigos</h3>
+      <p class="temas-desc">Compartilhe o FinançasPro e ganhe <strong>100 FP Coins</strong> por cada amigo que se cadastrar.</p>
+      <button class="btn btn-outline" onclick="gerarLinkConvite()">🔗 Gerar Link de Convite</button>
+      <div id="convite-link-area" style="margin-top:12px;display:none;">
+        <div class="convite-link-box">
+          <input type="text" id="convite-link-input" class="form-control" readonly>
+          <button class="btn btn-sm btn-primary" onclick="copiarLinkConvite()">📋 Copiar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- P3.3 · Calculadoras Financeiras -->
+  <div id="tab-calculadoras" class="tab-panel" role="tabpanel" aria-label="Calculadoras Financeiras">
+    <div class="section-header">
+      <h2 class="section-title">🧮 Calculadoras</h2>
+    </div>
+
+    <!-- Reserva de Emergência -->
+    <div class="calc-card">
+      <h3 class="calc-titulo">🛡️ Reserva de Emergência</h3>
+      <p class="calc-desc">Quanto você precisa guardar para ter segurança financeira?</p>
+      <div class="calc-form">
+        <label class="form-label">Gastos mensais médios (R$)</label>
+        <input type="number" id="calc-reserva-gastos" class="form-control" placeholder="3000" min="0">
+        <label class="form-label" style="margin-top:8px;">Meses de cobertura desejados</label>
+        <input type="number" id="calc-reserva-meses" class="form-control" value="6" min="1" max="24">
+        <label class="form-label" style="margin-top:8px;">Reserva atual (R$)</label>
+        <input type="number" id="calc-reserva-atual" class="form-control" placeholder="0" min="0">
+        <button class="btn btn-primary calc-btn" onclick="calcReserva()">Calcular</button>
+      </div>
+      <div id="calc-reserva-resultado" class="calc-resultado"></div>
+    </div>
+
+    <!-- Aposentadoria -->
+    <div class="calc-card" style="margin-top:16px;">
+      <h3 class="calc-titulo">🏖️ Aposentadoria</h3>
+      <p class="calc-desc">Quanto você precisa acumular para se aposentar confortavelmente?</p>
+      <div class="calc-form">
+        <label class="form-label">Renda mensal desejada (R$)</label>
+        <input type="number" id="calc-apos-renda" class="form-control" placeholder="5000" min="0">
+        <label class="form-label" style="margin-top:8px;">Sua idade atual</label>
+        <input type="number" id="calc-apos-idade" class="form-control" placeholder="30" min="18" max="80">
+        <label class="form-label" style="margin-top:8px;">Idade desejada para aposentar</label>
+        <input type="number" id="calc-apos-idade-ret" class="form-control" placeholder="65" min="30" max="90">
+        <label class="form-label" style="margin-top:8px;">Patrimônio atual investido (R$)</label>
+        <input type="number" id="calc-apos-patrimonio" class="form-control" placeholder="0" min="0">
+        <button class="btn btn-primary calc-btn" onclick="calcAposentadoria()">Calcular</button>
+      </div>
+      <div id="calc-apos-resultado" class="calc-resultado"></div>
+    </div>
+
+    <!-- Financiamento SAC vs PRICE -->
+    <div class="calc-card" style="margin-top:16px;">
+      <h3 class="calc-titulo">🏠 Financiamento: SAC vs PRICE</h3>
+      <p class="calc-desc">Compare os dois principais sistemas de amortização.</p>
+      <div class="calc-form">
+        <label class="form-label">Valor financiado (R$)</label>
+        <input type="number" id="calc-fin-valor" class="form-control" placeholder="300000" min="0">
+        <label class="form-label" style="margin-top:8px;">Taxa de juros mensal (%)</label>
+        <input type="number" id="calc-fin-taxa" class="form-control" placeholder="0.8" min="0" step="0.01">
+        <label class="form-label" style="margin-top:8px;">Prazo (meses)</label>
+        <input type="number" id="calc-fin-prazo" class="form-control" placeholder="240" min="1" max="420">
+        <button class="btn btn-primary calc-btn" onclick="calcFinanciamento()">Comparar</button>
+      </div>
+      <div id="calc-fin-resultado" class="calc-resultado"></div>
+    </div>
+
+    <!-- IR sobre Investimentos -->
+    <div class="calc-card" style="margin-top:16px;">
+      <h3 class="calc-titulo">📋 Imposto de Renda s/ Investimentos</h3>
+      <p class="calc-desc">Calcule o IR pelo tipo de investimento e prazo.</p>
+      <div class="calc-form">
+        <label class="form-label">Tipo de investimento</label>
+        <select id="calc-ir-tipo" class="form-control">
+          <option value="acoes">📊 Ações (swing trade)</option>
+          <option value="acoes_day">📊 Ações (day trade)</option>
+          <option value="rf_ate6">🏦 Renda Fixa — até 6 meses</option>
+          <option value="rf_6a12">🏦 Renda Fixa — 6 a 12 meses</option>
+          <option value="rf_12a24">🏦 Renda Fixa — 12 a 24 meses</option>
+          <option value="rf_acima24">🏦 Renda Fixa — acima de 24 meses</option>
+          <option value="fii">🏢 FII (Fundo Imobiliário)</option>
+          <option value="lci_lca">🌱 LCI/LCA (isento)</option>
+        </select>
+        <label class="form-label" style="margin-top:8px;">Lucro/Ganho líquido (R$)</label>
+        <input type="number" id="calc-ir-lucro" class="form-control" placeholder="5000" min="0">
+        <label class="form-label" style="margin-top:8px;">Vendas totais no mês (R$) — apenas ações</label>
+        <input type="number" id="calc-ir-vendas" class="form-control" placeholder="0" min="0">
+        <button class="btn btn-primary calc-btn" onclick="calcIR()">Calcular IR</button>
+      </div>
+      <div id="calc-ir-resultado" class="calc-resultado"></div>
+    </div>
+  </div>
+
+  <!-- P3.11 · Cotações e Moedas -->
+  <div id="tab-moedas" class="tab-panel" role="tabpanel" aria-label="Cotações e Moedas">
+    <div id="moedas-panel"></div>
+  </div>
+
+  <!-- P3.1 · Glossário Financeiro -->
+  <div id="tab-glossario" class="tab-panel" role="tabpanel" aria-label="Glossário Financeiro">
+    <div class="section-header">
+      <h2 class="section-title">📖 Glossário Financeiro</h2>
+    </div>
+    <div id="glossario-panel"></div>
+  </div>
+
+  <!-- P3.8+P3.9 · Modal Compartilhar Conquista -->
+  <div id="modal-compartilhar" class="tx-edit-overlay" style="display:none;"
+       role="dialog" aria-modal="true" aria-labelledby="modal-compartilhar-titulo">
+    <div class="tx-edit-sheet">
+      <div class="tx-edit-header">
+        <h3 id="modal-compartilhar-titulo" style="margin:0;font-size:1.05rem;">🎉 Compartilhar Conquista</h3>
+        <button class="tx-edit-close-btn" onclick="document.getElementById('modal-compartilhar').style.display='none'" aria-label="Fechar">✕</button>
+      </div>
+      <div class="tx-edit-body" style="text-align:center;">
+        <canvas id="canvas-conquista" style="max-width:100%;border-radius:12px;"></canvas>
+        <div style="margin-top:16px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="compartilharConquista()">🔗 Compartilhar</button>
+          <button class="btn btn-outline" onclick="document.getElementById('modal-compartilhar').style.display='none'">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       P4 TAB PANELS
+       ═══════════════════════════════════════════════════════════════════ -->
+
+  <!-- P4.1 · Transações Recorrentes -->
+  <div id="tab-recorrentes" class="tab-panel" role="tabpanel" aria-label="Transações Recorrentes">
+    <div class="section-header">
+      <h2 class="section-title">🔄 Transações Recorrentes</h2>
+      <button class="btn btn-primary btn-sm" onclick="abrirModalRecorrente()">+ Nova</button>
+    </div>
+    <p class="tab-desc">Cadastre despesas fixas e receitas regulares. Elas são lançadas automaticamente no período correto.</p>
+    <div id="recorrentes-panel"></div>
+  </div>
+
+  <!-- P4.2 · Metas Financeiras Avançadas -->
+  <div id="tab-metas" class="tab-panel" role="tabpanel" aria-label="Metas Financeiras">
+    <div class="section-header">
+      <h2 class="section-title">🎯 Minhas Metas</h2>
+      <button class="btn btn-primary btn-sm" onclick="abrirModalMeta()">+ Meta</button>
+    </div>
+    <div id="metas-avancadas-panel"></div>
+  </div>
+
+  <!-- P4.4 · Insights de IA -->
+  <div id="tab-insights" class="tab-panel" role="tabpanel" aria-label="Insights Financeiros">
+    <div class="section-header">
+      <h2 class="section-title">🤖 Insights Financeiros</h2>
+    </div>
+    <p class="tab-desc">Análise automática dos seus padrões de gastos com previsões e alertas personalizados.</p>
+    <div id="insights-panel"></div>
+  </div>
+
+  <!-- P4.8 · Relatório Multi-Mês -->
+  <div id="tab-relatorio-mm" class="tab-panel" role="tabpanel" aria-label="Relatório Multi-Mês">
+    <div class="section-header">
+      <h2 class="section-title">📊 Histórico Comparativo</h2>
+    </div>
+    <div id="relatorio-multimes-panel"></div>
+  </div>
+
+  <!-- P4.6 · Helper IRPF -->
+  <div id="tab-irpf" class="tab-panel" role="tabpanel" aria-label="Helper IRPF">
+    <div class="section-header">
+      <h2 class="section-title">📋 Declaração de IR</h2>
+    </div>
+    <p class="tab-desc">Simulação do IRPF com dados das suas transações. Tabela progressiva 2024.</p>
+
+    <div class="irpf-form-grid">
+      <!-- Rendimentos tributáveis -->
+      <div class="irpf-secao">
+        <h4 class="irpf-secao-titulo">💼 Rendimentos Tributáveis</h4>
+        <label class="form-label">Salários e pró-labore (R$)</label>
+        <input type="number" id="irpf-sal" class="form-control" min="0" oninput="updateIRPFField('rendimentos','salario',this.value)">
+        <label class="form-label">Aluguel recebido (R$)</label>
+        <input type="number" id="irpf-aluguel" class="form-control" min="0" oninput="updateIRPFField('rendimentos','aluguel',this.value)">
+        <label class="form-label">Freelance / Autônomo (R$)</label>
+        <input type="number" id="irpf-freela" class="form-control" min="0" oninput="updateIRPFField('rendimentos','freelance',this.value)">
+        <label class="form-label">Outros tributáveis (R$)</label>
+        <input type="number" id="irpf-outros-trib" class="form-control" min="0" oninput="updateIRPFField('rendimentos','outros_trib',this.value)">
+      </div>
+
+      <!-- Deduções -->
+      <div class="irpf-secao">
+        <h4 class="irpf-secao-titulo">📉 Deduções</h4>
+        <label class="form-label">INSS recolhido (R$)</label>
+        <input type="number" id="irpf-inss" class="form-control" min="0" oninput="updateIRPFField('deducoes','inss',this.value)">
+        <label class="form-label">Saúde — plano + consultas (R$)</label>
+        <input type="number" id="irpf-saude" class="form-control" min="0" oninput="updateIRPFField('deducoes','saude',this.value)">
+        <label class="form-label">Educação (limite R$ 3.561,50/ano)</label>
+        <input type="number" id="irpf-educ" class="form-control" min="0" oninput="updateIRPFField('deducoes','educacao',this.value)">
+        <label class="form-label">Dependentes (nº de pessoas)</label>
+        <input type="number" id="irpf-dep" class="form-control" min="0" max="20" oninput="updateIRPFField('deducoes','dependentes',this.value)">
+        <label class="form-label">IR retido na fonte (R$)</label>
+        <input type="number" id="irpf-ir-retido" class="form-control" min="0" oninput="updateIRPFField('irRetido','',this.value)">
+        <label class="form-label">Ano-base</label>
+        <select id="irpf-ano" class="form-control" onchange="updateIRPFField('ano','',this.value)">
+          <option value="2024">2024</option>
+          <option value="2023">2023</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" style="margin-top:16px;" onclick="renderIRPF()">🔄 Recalcular</button>
+    <div id="irpf-resultado" class="irpf-resultado" style="margin-top:16px;"></div>
+  </div>
+
+  <!-- P4.9 · Open Finance + PIX -->
+  <div id="tab-open-finance" class="tab-panel" role="tabpanel" aria-label="Open Finance e PIX">
+    <div class="section-header">
+      <h2 class="section-title">🏦 Open Finance & PIX</h2>
+    </div>
+    <div id="open-finance-panel"></div>
+  </div>
+
+  <!-- Modal: Nova Recorrente -->
+  <div id="modal-recorrente" class="tx-edit-overlay" style="display:none;"
+       role="dialog" aria-modal="true" aria-labelledby="modal-rec-titulo">
+    <div class="tx-edit-sheet">
+      <div class="tx-edit-header">
+        <h3 id="modal-rec-titulo" style="margin:0;font-size:1.05rem;">🔄 Nova Recorrente</h3>
+        <button class="tx-edit-close-btn" onclick="fecharModalRecorrente()" aria-label="Fechar">✕</button>
+      </div>
+      <div class="tx-edit-body">
+        <div class="tipo-toggle" style="margin-bottom:12px;">
+          <button class="rec-tipo-btn active-despesa" data-tipo="despesa" onclick="setTipoRecorrente('despesa')">💸 Despesa</button>
+          <button class="rec-tipo-btn" data-tipo="receita" onclick="setTipoRecorrente('receita')">💚 Receita</button>
+        </div>
+        <label class="form-label">Descrição</label>
+        <input type="text" id="rec-desc" class="form-control" placeholder="Ex: Aluguel, Netflix, Salário...">
+        <label class="form-label" style="margin-top:8px;">Valor (R$)</label>
+        <input type="number" id="rec-valor" class="form-control" min="0" step="0.01" placeholder="0,00">
+        <label class="form-label" style="margin-top:8px;">Categoria</label>
+        <select id="rec-cat" class="form-control">
+          <option value="moradia">🏠 Moradia</option>
+          <option value="aluguel">🔑 Aluguel</option>
+          <option value="streaming">📺 Streaming</option>
+          <option value="internet">🌐 Internet</option>
+          <option value="telefone">📱 Telefone</option>
+          <option value="salario">💼 Salário</option>
+          <option value="freelance">💻 Freelance</option>
+          <option value="condominio">🏢 Condomínio</option>
+          <option value="plano_saude">🏥 Plano de Saúde</option>
+          <option value="outros">📦 Outros</option>
+        </select>
+        <label class="form-label" style="margin-top:8px;">Frequência</label>
+        <select id="rec-freq" class="form-control">
+          <option value="diaria">Diária</option>
+          <option value="semanal">Semanal</option>
+          <option value="quinzenal">Quinzenal</option>
+          <option value="mensal" selected>Mensal</option>
+          <option value="bimestral">Bimestral</option>
+          <option value="trimestral">Trimestral</option>
+          <option value="semestral">Semestral</option>
+          <option value="anual">Anual</option>
+        </select>
+        <label class="form-label" style="margin-top:8px;">Próximo lançamento</label>
+        <input type="date" id="rec-proxima" class="form-control">
+      </div>
+      <div class="tx-edit-footer">
+        <button class="btn btn-ghost" onclick="fecharModalRecorrente()">Cancelar</button>
+        <button class="btn btn-primary" onclick="salvarNovaRecorrente()">✅ Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Nova Meta -->
+  <div id="modal-nova-meta" class="tx-edit-overlay" style="display:none;"
+       role="dialog" aria-modal="true" aria-labelledby="modal-meta-titulo">
+    <div class="tx-edit-sheet">
+      <div class="tx-edit-header">
+        <h3 id="modal-meta-titulo" style="margin:0;font-size:1.05rem;">🎯 Nova Meta</h3>
+        <button class="tx-edit-close-btn" onclick="fecharModalMeta()" aria-label="Fechar">✕</button>
+      </div>
+      <div class="tx-edit-body">
+        <label class="form-label">Nome da meta</label>
+        <input type="text" id="meta-nome" class="form-control" placeholder="Ex: Viagem para Europa">
+        <label class="form-label" style="margin-top:8px;">Tipo</label>
+        <select id="meta-icone" class="form-control">
+          <option value="viagem">✈️ Viagem</option>
+          <option value="casa">🏠 Casa</option>
+          <option value="carro">🚗 Carro</option>
+          <option value="educacao">📚 Educação</option>
+          <option value="casamento">💍 Casamento</option>
+          <option value="emergencia">🛡️ Reserva</option>
+          <option value="aposentadoria">🏖️ Aposentadoria</option>
+          <option value="eletronico">📱 Eletrônico</option>
+          <option value="negocio">💼 Negócio</option>
+          <option value="outro">⭐ Outro</option>
+        </select>
+        <label class="form-label" style="margin-top:8px;">Valor alvo (R$)</label>
+        <input type="number" id="meta-alvo" class="form-control" min="0" step="0.01" placeholder="10000,00">
+        <label class="form-label" style="margin-top:8px;">Já tenho acumulado (R$)</label>
+        <input type="number" id="meta-atual" class="form-control" min="0" step="0.01" value="0">
+        <label class="form-label" style="margin-top:8px;">Prazo desejado (mês/ano)</label>
+        <input type="month" id="meta-prazo" class="form-control">
+        <label class="form-label" style="margin-top:8px;">Rendimento esperado (% a.m.)</label>
+        <input type="number" id="meta-rendimento" class="form-control" value="0.7" min="0" max="5" step="0.1">
+        <label class="form-label" style="margin-top:8px;">Cor</label>
+        <input type="color" id="meta-cor" class="form-control" value="#6366f1" style="height:40px;">
+      </div>
+      <div class="tx-edit-footer">
+        <button class="btn btn-ghost" onclick="fecharModalMeta()">Cancelar</button>
+        <button class="btn btn-primary" onclick="salvarNovaMeta()">✅ Criar Meta</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Categoria Personalizada -->
+  <div id="modal-cat-custom" class="tx-edit-overlay" style="display:none;"
+       role="dialog" aria-modal="true" aria-labelledby="modal-cat-titulo">
+    <div class="tx-edit-sheet">
+      <div class="tx-edit-header">
+        <h3 id="modal-cat-titulo" style="margin:0;font-size:1.05rem;">🏷️ Nova Categoria</h3>
+        <button class="tx-edit-close-btn" onclick="fecharModalCatCustom()" aria-label="Fechar">✕</button>
+      </div>
+      <div class="tx-edit-body">
+        <label class="form-label">Nome da categoria</label>
+        <input type="text" id="cat-custom-nome" class="form-control" placeholder="Ex: Hobby, Pets, Beleza...">
+        <label class="form-label" style="margin-top:12px;">Emoji</label>
+        <input type="text" id="cat-custom-emoji" class="form-control" value="🏷️" style="font-size:1.3rem;text-align:center;">
+        <div id="cat-emoji-picker" class="emoji-picker-grid" style="margin-top:8px;"></div>
+        <label class="form-label" style="margin-top:12px;">Cor</label>
+        <input type="color" id="cat-custom-cor" class="form-control" value="#6366f1" style="height:40px;">
+        <div id="cat-cor-picker" class="cor-picker-row" style="margin-top:8px;"></div>
+      </div>
+      <div class="tx-edit-footer">
+        <button class="btn btn-ghost" onclick="fecharModalCatCustom()">Cancelar</button>
+        <button class="btn btn-primary" onclick="salvarCatCustom()">✅ Criar</button>
+      </div>
+    </div>
+  </div>
+
+
+</div><!-- /app-container -->
+
+  <!-- ═══ LIBS EXTERNAS ═══ -->
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+
+  <!-- ═══ CORE: scripts críticos para o primeiro render (dashboard) ═══ -->
+  <script defer src="js/config.js"></script>
+  <script defer src="js/utils.js"></script>
+  <script defer src="js/auth.js"></script>
+  <script defer src="js/dados.js"></script>
+  <script defer src="js/categorias.js"></script>
+  <script defer src="js/categorias-br.js"></script>
+  <script defer src="js/render.js"></script>
+  <script defer src="js/contas.js"></script>
+  <script defer src="js/alertas.js"></script>
+  <script defer src="js/gamificacao.js"></script>
+  <script defer src="js/trial.js"></script>
+  <script defer src="js/pwa.js"></script>
+  <script defer src="js/filtros.js"></script>
+  <script defer src="js/modal-edicao.js"></script>
+  <script defer src="js/investimentos-avancado.js"></script>
+  <script defer src="js/investimentos-supabase.js"></script>
+  <script defer src="js/init.js"></script>
+
+  <!-- ═══ SECONDARY: carregados via idle callback após o app estar pronto ═══ -->
+  <script>
+  (function(){
+    var secondaryScripts = [
+      'js/graficos.js',
+      'js/orcamento5030.js',
+      'js/dividas.js',
+      'js/calendario.js',
+      'js/investimentos.js',
+      'js/relatorio.js',
+      'js/relatorio-multimes.js',
+      'js/notificacoes.js',
+      'js/atalhos.js',
+      'js/tour.js',
+      'js/dica.js',
+      'js/trilha.js',
+      'js/calculadoras.js',
+      'js/desafios.js',
+      'js/temas.js',
+      'js/compartilhar.js',
+      'js/moedas.js',
+      'js/parsers-csv.js',
+      'js/recorrentes.js',
+      'js/metas-avancadas.js',
+      'js/categorias-custom.js',
+      'js/insights.js',
+      'js/sync-realtime.js',
+      'js/irpf.js',
+      'js/offline-queue.js',
+      'js/open-finance.js'
+    ];
+    function loadSecondary(){
+      secondaryScripts.forEach(function(src){
+        var s = document.createElement('script');
+        s.src = src; s.defer = true;
+        document.body.appendChild(s);
+      });
+    }
+    if('requestIdleCallback' in window){
+      requestIdleCallback(loadSecondary, {timeout: 2000});
+    } else {
+      setTimeout(loadSecondary, 1500);
+    }
+  })();
+  </script>
+
+<!-- ══ BOTTOM NAV (mobile) ══ -->
+<nav class="bottom-nav" id="bottom-nav" aria-label="Navegação principal">
+  <div class="bottom-nav-inner">
+    <button class="bottom-nav-btn active" data-tab="dashboard" onclick="switchTab(event,'dashboard')">
+      <span class="bnav-icon">🏠</span><span>Início</span>
+    </button>
+    <button class="bottom-nav-btn" data-tab="transacoes" onclick="switchTab(event,'transacoes')">
+      <span class="bnav-icon">💸</span><span>Extrato</span>
+    </button>
+    <button class="bottom-nav-btn" data-tab="orcamento" onclick="switchTab(event,'orcamento')">
+      <span class="bnav-icon">📊</span><span>Orçamento</span>
+    </button>
+    <button class="bottom-nav-btn" data-tab="conquistas" onclick="switchTab(event,'conquistas')">
+      <span class="bnav-icon">🏆</span><span>Conquistas</span>
+    </button>
+    <button class="bottom-nav-btn" data-tab="mais" onclick="toggleMaisDrawer()">
+      <span class="bnav-icon">☰</span><span>Mais</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ══ DRAWER "MAIS" ══ -->
+<div class="mais-drawer-overlay" id="mais-drawer-overlay" onclick="fecharMaisDrawer()"></div>
+<div class="mais-drawer" id="mais-drawer">
+  <div class="mais-drawer-handle"></div>
+  <div class="mais-drawer-grid">
+    <div class="mais-drawer-item" onclick="switchTabFromDrawer('cartoes')"><span class="md-icon">💳</span>Cartões</div>
+    <div class="mais-drawer-item" onclick="switchTabFromDrawer('dividas')"><span class="md-icon">💳</span>Dívidas</div>
+    <div class="mais-drawer-item" onclick="switchTabFromDrawer('calendario')"><span class="md-icon">📅</span>Calendário</div>
+    <div class="mais-drawer-item" onclick="switchTabFromDrawer('investimentos')"><span class="md-icon">📈</span>Invest.</div>
+    <div class="mais-drawer-item" onclick="switchTabFromDrawer('trilha')"><span class="md-icon">📚</span>Trilha</div>
+    <div class="mais-drawer-item" onclick="switchTabFromDrawer('desafios')"><span class="md-icon">🎯</span>Desafios</div>
+    <div class="mais-drawer-item" onclick="switchTabFromDrawer('calculadoras')"><span class="md-icon">🧮</span>Calc.</div>
+    <div class="mais-drawer-item" onclick="switchTabFromDrawer('moedas')"><span class="md-icon">💱</span>Moedas</div>
+    <div class="mais-drawer-item" onclick="switchTabFromDrawer('recorrentes')"><span class="md-icon">🔄</span>Fixas</div>
+    <div class="mais-drawer-item" onclick="switchTabFromDrawer('metas')"><span class="md-icon">🎯</span>Metas</div>
+    <div class="mais-drawer-item" onclick="switchTabFromDrawer('insights')"><span class="md-icon">🤖</span>Insights</div>
+    <div class="mais-drawer-item" onclick="switchTabFromDrawer('relatorio-mm')"><span class="md-icon">📊</span>Histórico</div>
+    <div class="mais-drawer-item" onclick="switchTabFromDrawer('irpf')"><span class="md-icon">📋</span>IRPF</div>
+    <div class="mais-drawer-item" onclick="switchTabFromDrawer('open-finance')"><span class="md-icon">🏦</span>Open Fin.</div>
+    <div class="mais-drawer-item" onclick="switchTabFromDrawer('temas')"><span class="md-icon">🎨</span>Temas</div>
+    <div class="mais-drawer-item" onclick="switchTabFromDrawer('glossario')"><span class="md-icon">📖</span>Glossário</div>
+    <div class="mais-drawer-item" onclick="switchTabFromDrawer('evolucao')"><span class="md-icon">📈</span>Evolução</div>
+    <div class="mais-drawer-item" onclick="switchTabFromDrawer('simulador')"><span class="md-icon">🧮</span>Simulador</div>
+    <div class="mais-drawer-item" onclick="switchTabFromDrawer('configuracoes')"><span class="md-icon">⚙️</span>Config</div>
+  </div>
+</div>
+
+<script>
+// ── Bottom Nav & Drawer "Mais" ──
+function toggleMaisDrawer() {
+  var overlay = document.getElementById('mais-drawer-overlay');
+  var drawer = document.getElementById('mais-drawer');
+  var isOpen = drawer.classList.contains('show');
+  if (isOpen) {
+    fecharMaisDrawer();
+  } else {
+    overlay.classList.add('show');
+    drawer.classList.add('show');
+  }
+}
+function fecharMaisDrawer() {
+  document.getElementById('mais-drawer-overlay').classList.remove('show');
+  document.getElementById('mais-drawer').classList.remove('show');
+}
+function switchTabFromDrawer(tab) {
+  fecharMaisDrawer();
+  switchTab(null, tab);
+  _syncBottomNav(tab);
+}
+
+// Sincroniza a bottom nav ao trocar de tab (incluindo a nav-tabs desktop)
+var _origSwitchTab = typeof switchTab === 'function' ? switchTab : null;
+function _syncBottomNav(tab) {
+  var btns = document.querySelectorAll('.bottom-nav-btn');
+  var mainTabs = ['dashboard','transacoes','orcamento','conquistas'];
+  btns.forEach(function(b) {
+    b.classList.remove('active');
+    if (b.getAttribute('data-tab') === tab) b.classList.add('active');
+  });
+  // Se não é uma das 4 tabs principais, marca "Mais" como ativo
+  if (mainTabs.indexOf(tab) === -1) {
+    btns.forEach(function(b) { b.classList.remove('active'); });
+    var maisBtn = document.querySelector('.bottom-nav-btn[data-tab="mais"]');
+    if (maisBtn) maisBtn.classList.add('active');
+  }
+}
+
+// Observer para detectar mudanças de tab via nav-tabs desktop
+(function() {
+  var observer = new MutationObserver(function() {
+    var activePanel = document.querySelector('.tab-panel.active');
+    if (activePanel) {
+      var tab = activePanel.id.replace('tab-', '');
+      _syncBottomNav(tab);
+    }
+  });
+  document.addEventListener('DOMContentLoaded', function() {
+    var panels = document.querySelectorAll('.tab-panel');
+    panels.forEach(function(p) {
+      observer.observe(p, { attributes: true, attributeFilter: ['class'] });
+    });
+  });
+})();
+
+// ARIA: navegação por setas no tablist (WAI-ARIA pattern)
+document.querySelectorAll('[role="tablist"]').forEach(function(tablist) {
+  tablist.addEventListener('keydown', function(e) {
+    if (!['ArrowLeft','ArrowRight','Home','End'].includes(e.key)) return;
+    var tabs = Array.from(tablist.querySelectorAll('[role="tab"]:not([style*="display:none"])'));
+    if (!tabs.length) return;
+    var idx = tabs.indexOf(document.activeElement);
+    if (idx < 0) return;
+    e.preventDefault();
+    if (e.key === 'ArrowRight') idx = (idx + 1) % tabs.length;
+    else if (e.key === 'ArrowLeft') idx = (idx - 1 + tabs.length) % tabs.length;
+    else if (e.key === 'Home') idx = 0;
+    else if (e.key === 'End') idx = tabs.length - 1;
+    tabs[idx].focus();
+    tabs[idx].click();
+  });
+});
+
+// ARIA init: marcar estado inicial
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.tab-panel').forEach(function(p) {
+    if (!p.getAttribute('role')) p.setAttribute('role', 'tabpanel');
+    p.setAttribute('aria-hidden', p.classList.contains('active') ? 'false' : 'true');
+  });
+  document.querySelectorAll('[role="tab"]').forEach(function(t) {
+    var isActive = t.classList.contains('active');
+    t.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    t.setAttribute('tabindex', isActive ? '0' : '-1');
+    var tabName = t.getAttribute('data-tab');
+    if (tabName) t.setAttribute('aria-controls', 'tab-' + tabName);
+  });
+});
+
+// Splash screen: esconder quando o app estiver pronto
+window.addEventListener('load', function() {
+  var splash = document.getElementById('splash-screen');
+  if (splash) {
+    // Dar pelo menos 800ms para o splash ser visto
+    setTimeout(function() {
+      splash.classList.add('splash-hide');
+      setTimeout(function() { splash.remove(); }, 500);
+    }, 800);
+  }
+});
+</script>
+</html>
