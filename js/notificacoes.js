@@ -178,40 +178,4 @@
       const fgHora = document.createElement('div');
       fgHora.className = 'form-group'; fgHora.style.marginTop = '8px';
       const lblHora = document.createElement('label');
-      lblHora.className = 'form-label'; lblHora.htmlFor = 'notif-hora';
-      lblHora.textContent = 'Hor\u00e1rio do lembrete';
-      const inpHora = document.createElement('input');
-      inpHora.type = 'time'; inpHora.id = 'notif-hora';
-      inpHora.className = 'form-control'; inpHora.style.maxWidth = '120px';
-      inpHora.value = _config.hora || '09:00';
-      fgHora.append(lblHora, inpHora);
-      opcoes.appendChild(fgHora);
-
-      const btnSalvar = document.createElement('button');
-      btnSalvar.className = 'btn btn-primary btn-sm'; btnSalvar.style.marginTop = '12px';
-      btnSalvar.textContent = '\ud83d\udcbe Salvar';
-      btnSalvar.addEventListener('click', salvarConfigNotif);
-      opcoes.appendChild(btnSalvar);
-
-      el.appendChild(opcoes);
-    }
-  }
-  window.renderNotifConfig = renderNotifConfig;
-
-  // ── Init ────────────────────────────────────────────────────
-  function _init() {
-    _carregar();
-    if ('Notification' in window && Notification.permission === 'granted') {
-      _iniciarAgendamento();
-    }
-    // Render UI se painel existir
-    renderNotifConfig();
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', _init);
-  } else {
-    _init();
-  }
-
-})();
+      lblHora.c

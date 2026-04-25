@@ -117,31 +117,4 @@ self.addEventListener('message', e => {
 // ── Push Notifications ───────────────────────────────────────
 self.addEventListener('push', e => {
   let data = { title: 'FinançasPro', body: 'Lembrete financeiro!', icon: './icons/icon-192.png' };
-  try {
-    const payload = e.data ? e.data.json() : {};
-    data = { ...data, ...payload };
-  } catch(_) {}
-  e.waitUntil(
-    self.registration.showNotification(data.title, {
-      body: data.body,
-      icon: data.icon || './icons/icon-192.png',
-      badge: './icons/icon-192.png',
-      vibrate: [200, 100, 200],
-      tag: data.tag || 'fp-notif',
-      data: { url: data.url || './' }
-    })
-  );
-});
-
-self.addEventListener('notificationclick', e => {
-  e.notification.close();
-  e.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(list => {
-      const url = e.notification.data?.url || './';
-      for (const client of list) {
-        if (client.url === url && 'focus' in client) return client.focus();
-      }
-      if (clients.openWindow) return clients.openWindow(url);
-    })
-  );
-});
+  tr
