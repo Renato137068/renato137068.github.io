@@ -1,108 +1,108 @@
-// FinançasPro — Utilitários (modais, toasts, formatação)
-// v10.8 — Independente
+/**
+ * utils.js - Utility Functions
+ * Tier 1: Depends on config.js
+ */
 
-// MODAL DIALOG UNIVERSAL
-// ════════════════════════════════════
-let _fpModalCb = null;  // era var — trocado para let (escopo mais seguro)
-
-function _fpModalSetup(icon, msg, showInput, showCancel, okLabel) {
-  // Optional chaining defensivo: não quebra se IDs mudarem ou elemento não existir
-  const el = id => document.getElementById(id);
-
-  const iconEl = el('fp-modal-icon');
-  const titleEl = el('fp-modal-title');
-  const msgEl = el('fp-modal-msg');
-  const inp = el('fp-modal-input');
-  const cancelBtn = el('fp-modal-cancel');
-  const okBtn = el('fp-modal-ok');
-  const overlay = el('fp-modal-overlay');
-
-  if (iconEl) iconEl.textContent = icon;
-  if (titleEl) titleEl.textContent = '';
-  if (msgEl) msgEl.textContent = msg;
-  if (inp) inp.style.display = showInput ? '' : 'none';
-  if (cancelBtn) cancelBtn.style.display = showCancel ? '' : 'none';
-  if (okBtn) okBtn.textContent = okLabel;
-  if (overlay) overlay.classList.remove('hidden');
-}
-
-function fpAlert(msg, icon) {
-  _fpModalCb = null;
-  _fpModalSetup(icon || 'ℹ️', msg, false, false, 'OK');
-}
-
-function fpConfirm(msg, onOk, icon) {
-  _fpModalCb = onOk || null;
-  _fpModalSetup(icon || '❓', msg, false, true, 'Confirmar');
-}
-
-function fpPrompt(msg, defaultVal, onOk, icon, inputType) {
-  _fpModalCb = onOk || null;
-  _fpModalSetup(icon || '✏️', msg, true, true, 'Confirmar');
-  const inp = document.getElementById('fp-modal-input');
-  if (!inp) return;
-  inp.type = inputType || 'text';
-  inp.value = defaultVal || '';
-  setTimeout(() => { inp.focus(); inp.select(); }, 120);
-}
-
-function fpModalOk() {
-  const inp = document.getElementById('fp-modal-input');
-  const val = inp && inp.style.display !== 'none' ? inp.value : true;
-  const overlay = document.getElementById('fp-modal-overlay');
-  if (overlay) overlay.classList.add('hidden');
-  const cb = _fpModalCb; _fpModalCb = null;
-  if (cb) cb(val);
-}
-
-function fpModalCancel() {
-  const overlay = document.getElementById('fp-modal-overlay');
-  if (overlay) overlay.classList.add('hidden');
-  _fpModalCb = null;
-}
-
-// Fechar ao clicar no fundo
-document.addEventListener('click', function(e) {
-  if (e.target && e.target.id === 'fp-modal-overlay') fpModalCancel();
-});
-
-
-// ── mostrarToast: alias de showToast (compatibilidade) ───────────────────
-function mostrarToast(msg, tipo) {
-  showToast(msg, tipo || 'success');
-}
-
-// ── Escape fecha qualquer overlay/modal aberto ─────────────────────────────
-document.addEventListener('keydown', function(e) {
-  if (e.key !== 'Escape') return;
-  // fp-modal
-  const mo = document.getElementById('fp-modal-overlay');
-  if (mo && !mo.classList.contains('hidden')) { fpModalCancel(); return; }
-  // achievement popup
-  const ap = document.getElementById('achievement-overlay');
-  if (ap && ap.classList.contains('show')) {
-    if (typeof closeAchievementPopup === 'function') closeAchievementPopup();
-    return;
+const UTILS = {
+  // Formatação
+  formatarMoeda(valor, moeda = 'BRL') {
+    const config = CONFIG.MOEDA_FORMATACAO[moeda] || CONFIG.MOEDA_FORMATACAO.BRL;
+    return new Intl.NumberFormat(config.locale, {
+      style: 'currency',
+      currency: config.currency
+    }).format(valor);
+  },
+  
+  formatarData(data) {
+    if (typeof data === 'string') {
+      data = new Date(data);
+    }
+    return new Intl.DateTimeFormat('pt-BR', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    }).format(data);
+  },
+  
+  formatarDataHora(data) {
+    if (typeof data === 'string') {
+      data = new Date(data);
+    }
+    return new Intl.DateTimeFormat('pt-BR', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    }).format(data);
+  },
+  
+  // Validação
+  validarTransacao(transacao) {
+    if (!transacao.valor || transacao.valor <= 0) {
+      return { valido: false, erro: 'Valor deve ser maior que 0' };
+    }
+    if (!transacao.tipo || ![CONFIG.TIPO_RECEITA, CONFIG.TIPO_DESPESA].includes(transacao.tipo)) {
+      return { valido: false, erro: 'Tipo inválido' };
+    }
+    if (!transacao.categoria) {
+      return { valido: false, erro: 'Categoria obrigatória' };
+    }
+    if (!transacao.data) {
+      return { valido: false, erro: 'Data obrigatória' };
+    }
+    return { valido: true };
+  },
+  
+  // DOM helpers
+  $(selector) {
+    return document.querySelector(selector);
+  },
+  
+  $$(selector) {
+    return document.querySelectorAll(selector);
+  },
+  
+  mostrarToast(mensagem, tipo = 'info') {
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${tipo}`;
+    toast.textContent = mensagem;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.classList.add('show');
+    }, 10);
+    
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
+  },
+  
+  // Cálculos
+  calcularSaldo(transacoes) {
+    return transacoes.reduce((acc, t) => {
+      if (t.tipo === CONFIG.TIPO_RECEITA) {
+        return acc + t.valor;
+      } else {
+        return acc - t.valor;
+      }
+    }, 0);
+  },
+  
+  // Filtros
+  filtrarPorMês(transacoes, mes, ano) {
+    return transacoes.filter(t => {
+      const data = new Date(t.data);
+      return data.getMonth() === mes - 1 && data.getFullYear() === ano;
+    });
+  },
+  
+  filtrarPorTipo(transacoes, tipo) {
+    return transacoes.filter(t => t.tipo === tipo);
   }
-  // onboarding overlay
-  const ob = document.getElementById('onboarding-overlay');
-  if (ob && !ob.classList.contains('hidden')) {
-    if (typeof fecharOnboarding === 'function') fecharOnboarding();
-    return;
-  }
-  // autocomplete
-  const ac = document.getElementById('autocomplete-list');
-  if (ac && ac.style.display !== 'none') { ac.style.display = 'none'; return; }
-});
+};
 
-// ── Inicialização robusta ──────────────────────────────────────────────────
-// Funciona mesmo com scripts carregados via defer ou de forma assíncrona.
-// Com defer, DOMContentLoaded pode já ter disparado quando este script roda.
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', init);
-} else {
-  // DOM já está pronto (ex: script carregado após parsing completo)
-  init();
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = UTILS;
 }
-
-// ════════════════════════════════════

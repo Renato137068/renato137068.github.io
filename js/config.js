@@ -1,34 +1,55 @@
-// FinançasPro — Configuração e Constantes
-// v11.0 — Independente: carregado primeiro
+/**
+ * config.js - Application Constants and Configuration
+ * Tier 0: No dependencies
+ */
 
-const APP_VERSION = '11.0';
+const CONFIG = {
+  APP_NAME: 'FinançasPro MVP',
+  VERSION: '1.0.0',
+  
+  // Storage keys
+  STORAGE_TRANSACOES: 'fp-transacoes',
+  STORAGE_CONFIG: 'fp-config',
+  
+  // Transaction types
+  TIPO_RECEITA: 'receita',
+  TIPO_DESPESA: 'despesa',
+  
+  // Categories
+  CATEGORIAS_RECEITA: [
+    'Salário',
+    'Freelance',
+    'Investimentos',
+    'Vendas',
+    'Outros'
+  ],
+  
+  CATEGORIAS_DESPESA: [
+    'Alimentação',
+    'Transporte',
+    'Utilities',
+    'Saúde',
+    'Educação',
+    'Entretenimento',
+    'Outros'
+  ],
+  
+  // Default user config
+  DEFAULT_CONFIG: {
+    nome: 'Usuário',
+    moeda: 'BRL',
+    tema: 'light',
+    ultimoExportoDados: null
+  },
+  
+  // Formato de moeda
+  MOEDA_FORMATACAO: {
+    BRL: { locale: 'pt-BR', currency: 'BRL' },
+    USD: { locale: 'en-US', currency: 'USD' },
+    EUR: { locale: 'pt-PT', currency: 'EUR' }
+  }
+};
 
-// ── CONFIGURAÇÃO DO PLANO ──
-// Object.freeze: impede mutação acidental por outros módulos
-const PLANO = Object.freeze({
-  TRIAL_DAYS: 36500,          // gratuito para sempre
-  DAILY_GOAL_TXS: 3,
-  PREMIUM_HISTORICO_MESES: 99,
-  CHECKOUT_URL: '#',          // TODO: substituir pela URL do Hotmart/checkout
-});
-
-// Helper: retorna URL de checkout (facilita substituição futura)
-function getCheckoutUrl(plano) {
-  return PLANO.CHECKOUT_URL || '#';
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = CONFIG;
 }
-
-// ── CATEGORIAS ──
-// Object.freeze: evita sobrescrever ícones/labels em runtime
-const CATEGORIAS_ICON = Object.freeze({
-  alimentacao:'🍔', moradia:'🏠', transporte:'🚗', saude:'💊', educacao:'📚',
-  lazer:'🎮', vestuario:'👕', salario:'💼', freelance:'💻', investimentos:'📈',
-  outros:'📦', '':'📌'
-});
-
-const CATEGORIAS_LABEL = Object.freeze({
-  alimentacao:'Alimentação', moradia:'Moradia', transporte:'Transporte', saude:'Saúde',
-  educacao:'Educação', lazer:'Lazer', vestuario:'Vestuário', salario:'Salário',
-  freelance:'Freelance', investimentos:'Investimentos', outros:'Outros'
-});
-
-// ════════════════════════════════════
