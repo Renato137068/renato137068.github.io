@@ -1,14 +1,14 @@
 // backend/middleware/auth.js — verificação de JWT e hidratação de req.user
 import { verifyAccessToken } from '../lib/jwt.js';
+import { getAccessToken } from '../lib/authCookies.js';
 import prisma from '../lib/db.js';
 
 /**
- * Extrai e verifica o Bearer token. Hidrata req.user com o usuário do banco.
+ * Extrai e verifica o Bearer token ou cookie HttpOnly. Hidrata req.user com o usuário do banco.
  * Retorna 401 se token ausente/inválido, 403 se usuário inativo, 503 se DB indisponível.
  */
 export async function authenticate(req, res, next) {
-  const header = req.headers.authorization ?? '';
-  const token = header.startsWith('Bearer ') ? header.slice(7).trim() : '';
+  const token = getAccessToken(req);
 
   if (!token) return res.status(401).json({ error: 'Token de autenticação ausente' });
 
@@ -38,8 +38,7 @@ export async function authenticate(req, res, next) {
  * Útil para rotas públicas que se comportam diferente quando autenticadas.
  */
 export async function optionalAuth(req, res, next) {
-  const header = req.headers.authorization ?? '';
-  const token = header.startsWith('Bearer ') ? header.slice(7).trim() : '';
+  const token = getAccessToken(req);
 
   if (!token) {
     req.user = null;

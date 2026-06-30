@@ -56,12 +56,12 @@ var PREVISAO = {
 
   _tendenciaIcon: function(tendencia) {
     var icons = {
-      'gastos-crescendo':     { icon: '📈', cor: 'var(--cor-danger, #e53e3e)',  texto: 'Gastos em alta' },
-      'gastos-diminuindo':    { icon: '📉', cor: 'var(--cor-success, #38a169)', texto: 'Gastos em queda' },
-      'receitas-crescendo':   { icon: '💹', cor: 'var(--cor-success, #38a169)', texto: 'Receitas em alta' },
-      'receitas-diminuindo':  { icon: '⬇️', cor: 'var(--cor-warning, #d69e2e)', texto: 'Receitas em queda' },
-      'estavel':              { icon: '➡️', cor: 'var(--cor-text-2, #666)',     texto: 'Tendência estável' },
-      'insuficiente':         { icon: '📊', cor: 'var(--cor-text-2, #666)',     texto: 'Dados insuficientes' }
+      'gastos-crescendo':     { icon: '<i data-lucide="trending-up" aria-hidden="true"></i>', cor: 'var(--cor-danger, #e53e3e)',  texto: 'Gastos em alta' },
+      'gastos-diminuindo':    { icon: '<i data-lucide="trending-down" aria-hidden="true"></i>', cor: 'var(--cor-success, #38a169)', texto: 'Gastos em queda' },
+      'receitas-crescendo':   { icon: '<i data-lucide="trending-up" aria-hidden="true"></i>', cor: 'var(--cor-success, #38a169)', texto: 'Receitas em alta' },
+      'receitas-diminuindo':  { icon: '<i data-lucide="trending-down" aria-hidden="true"></i>', cor: 'var(--cor-warning, #d69e2e)', texto: 'Receitas em queda' },
+      'estavel':              { icon: '<i data-lucide="minus" aria-hidden="true"></i>', cor: 'var(--cor-text-2, #666)',     texto: 'Tendência estável' },
+      'insuficiente':         { icon: '<i data-lucide="bar-chart" aria-hidden="true"></i>', cor: 'var(--cor-text-2, #666)',     texto: 'Dados insuficientes' }
     };
     return icons[tendencia] || icons['estavel'];
   },
@@ -80,7 +80,10 @@ var PREVISAO = {
     var prev = this.calcular();
 
     if (prev.tendencia === 'insuficiente' || prev.meses.length === 0) {
-      el.innerHTML = '<div class="previsao-vazia">📊 Registre ao menos 2 meses de transações para ver projeções.</div>';
+      el.innerHTML = '<div class="previsao-vazia"><i data-lucide="bar-chart" aria-hidden="true"></i> Registre ao menos 2 meses de transações para ver projeções.</div>';
+      if (typeof renderLucideIcons === 'function') {
+        renderLucideIcons(el);
+      }
       return;
     }
 
@@ -91,19 +94,19 @@ var PREVISAO = {
     // Cards de projeção
     var cardsHtml = meses.map(function(m) {
       var saldoPos = m.saldoEstimado >= 0;
-      var confBadge = m.confianca === 'alta' ? '🎯' : m.confianca === 'media' ? '📐' : '💡';
+      var confBadge = m.confianca === 'alta' ? '<i data-lucide="target" aria-hidden="true"></i>' : m.confianca === 'media' ? '<i data-lucide="ruler" aria-hidden="true"></i>' : '<i data-lucide="lightbulb" aria-hidden="true"></i>';
       return '<div class="previsao-card" aria-label="Previsão ' + self._formatarMes(m.mesKey) + '">' +
         '<div class="previsao-card-mes">' + self._formatarMes(m.mesKey) + ' <span class="previsao-conf" title="Confiança ' + m.confianca + '">' + confBadge + '</span></div>' +
         '<div class="previsao-card-row">' +
-          '<span class="previsao-label">💚 Receitas</span>' +
+          '<span class="previsao-label"><i data-lucide="trending-up" aria-hidden="true"></i> Receitas</span>' +
           '<span class="previsao-valor receita">' + self._formatarMoeda(m.receitaEstimada) + '</span>' +
         '</div>' +
         '<div class="previsao-card-row">' +
-          '<span class="previsao-label">❤️ Despesas</span>' +
+          '<span class="previsao-label"><i data-lucide="trending-down" aria-hidden="true"></i> Despesas</span>' +
           '<span class="previsao-valor despesa">' + self._formatarMoeda(m.despesaEstimada) + '</span>' +
         '</div>' +
         '<div class="previsao-card-saldo ' + (saldoPos ? 'positivo' : 'negativo') + '">' +
-          (saldoPos ? '✅' : '⚠️') + ' Saldo: ' + self._formatarMoeda(m.saldoEstimado) +
+          (saldoPos ? '<i data-lucide="check-circle" aria-hidden="true"></i>' : '<i data-lucide="alert-circle" aria-hidden="true"></i>') + ' Saldo: ' + self._formatarMoeda(m.saldoEstimado) +
         '</div>' +
       '</div>';
     }).join('');
@@ -116,7 +119,7 @@ var PREVISAO = {
 
     el.innerHTML =
       '<div class="previsao-header">' +
-        '<h3 class="previsao-titulo">🔮 Previsão Financeira</h3>' +
+        '<h3 class="previsao-titulo"><i data-lucide="sparkles" aria-hidden="true"></i> Previsão Financeira</h3>' +
         '<div class="previsao-tendencia" style="color:' + tend.cor + '">' +
           tend.icon + ' ' + tend.texto +
         '</div>' +
@@ -126,7 +129,7 @@ var PREVISAO = {
 
       '<div class="previsao-saude">' +
         '<div class="saude-header">' +
-          '<span class="saude-titulo">💪 Saúde Financeira</span>' +
+          '<span class="saude-titulo"><i data-lucide="heart-pulse" aria-hidden="true"></i> Saúde Financeira</span>' +
           '<span class="saude-score" style="color:' + saudeCor + '">' + saude.score + '<small>/100</small></span>' +
         '</div>' +
         '<div class="saude-barra-bg">' +
@@ -135,7 +138,7 @@ var PREVISAO = {
         '<div class="saude-detalhes">' +
           saude.detalhes.map(function(d) {
             return '<div class="saude-item">' +
-              '<span class="saude-check">' + (d.ok ? '✅' : '⚡') + '</span>' +
+              '<span class="saude-check">' + (d.ok ? '<i data-lucide="check-circle" aria-hidden="true"></i>' : '<i data-lucide="zap" aria-hidden="true"></i>') + '</span>' +
               '<span class="saude-item-nome">' + d.item + '</span>' +
               '<span class="saude-item-desc">' + d.desc + '</span>' +
             '</div>';
@@ -144,7 +147,7 @@ var PREVISAO = {
       '</div>' +
 
       (prev.taxaPoupancaMedia > 0
-        ? '<div class="previsao-meta">📊 Taxa de poupança média: <strong>' + prev.taxaPoupancaMedia + '%</strong></div>'
+        ? '<div class="previsao-meta"><i data-lucide="bar-chart" aria-hidden="true"></i> Taxa de poupança média: <strong>' + prev.taxaPoupancaMedia + '%</strong></div>'
         : '') +
 
       (function() {
@@ -154,10 +157,14 @@ var PREVISAO = {
         var catLabel = (typeof CONFIG !== 'undefined' && CONFIG.getCatLabel && corte.categoriaAlvo)
           ? CONFIG.getCatLabel(corte.categoriaAlvo) : (corte.categoriaAlvo || '');
         return '<div class="previsao-meta previsao-meta-corte">' +
-          '🎯 Para atingir 20% de poupança, reduza <strong>R$ ' + corte.corteNecessario.toFixed(2).replace('.', ',') + '</strong>' +
+          '<i data-lucide="target" aria-hidden="true"></i> Para atingir 20% de poupança, reduza <strong>R$ ' + corte.corteNecessario.toFixed(2).replace('.', ',') + '</strong>' +
           (catLabel ? ' em <strong>' + catLabel + '</strong>' : '') + '.' +
         '</div>';
       }());
+    
+    if (typeof renderLucideIcons === 'function') {
+      renderLucideIcons(el);
+    }
   },
 
   /**
@@ -182,12 +189,15 @@ var PREVISAO = {
 
     el.innerHTML =
       '<div class="previsao-mini-inner" role="status" aria-label="Previsão próximo mês">' +
-        '<span class="previsao-mini-label">🔮 ' + self._formatarMes(proximo.mesKey) + '</span>' +
+        '<span class="previsao-mini-label"><i data-lucide="sparkles" aria-hidden="true"></i> ' + self._formatarMes(proximo.mesKey) + '</span>' +
         '<span class="previsao-mini-saldo ' + (saldoPos ? 'pos' : 'neg') + '">' +
           (saldoPos ? '+' : '') + self._formatarMoeda(proximo.saldoEstimado) +
         '</span>' +
         '<span class="previsao-mini-tend" style="color:' + tend.cor + '">' + tend.icon + '</span>' +
       '</div>';
+    if (typeof renderLucideIcons === 'function') {
+      renderLucideIcons(el);
+    }
   },
 
   // ─────────────────────────────────────────────────────────────────

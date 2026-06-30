@@ -381,7 +381,7 @@ var AI_ENGINE = {
           alertas.push({
             id: 'spike-gastos',
             tipo: 'padrao',
-            titulo: '📈 Gastos acima do normal',
+            titulo: '<i data-lucide="trending-up" aria-hidden="true"></i> Gastos acima do normal',
             msg: 'Suas despesas este mês estão ' + variacao + '% acima da média recente.',
             gravidade: 'media'
           });
@@ -403,7 +403,7 @@ var AI_ENGINE = {
           id: 'recorrente-' + (r.id || r.descricao),
           tipo: 'recorrente',
           titulo: '📅 Vencimento próximo',
-          msg: '"' + (r.descricao || 'Conta') + '" vence em ' + (diaVenc - diaMes) + ' dia(s) — R$ ' + Number(r.valor).toFixed(2).replace('.', ','),
+          msg: '"' + (typeof UTILS !== 'undefined' ? UTILS.escapeHtml(r.descricao || 'Conta') : (r.descricao || 'Conta')) + '" vence em ' + (diaVenc - diaMes) + ' dia(s) — R$ ' + Number(r.valor).toFixed(2).replace('.', ','),
           gravidade: 'media',
           acao: 'lancarRecorrente',
           parametros: r

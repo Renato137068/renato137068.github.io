@@ -43,12 +43,12 @@ var DADOS = {
   SCHEMA_VERSION: 2,
 
   _apiBaseUrl: function() {
+    if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
+      return '';
+    }
     var base = (CONFIG.API_BASE_URL || '').trim();
     if (!base) {
       base = (CONFIG.API_FALLBACK_URL || '').trim();
-    }
-    if (!base && typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
-      base = 'http://localhost:4000';
     }
     return base ? base.replace(/\/$/, '') : '';
   },
@@ -63,11 +63,16 @@ var DADOS = {
     if (!base || typeof fetch !== 'function') {
       return Promise.reject(new Error('API indisponivel'));
     }
-    var accessToken = localStorage.getItem(CONFIG.API_TOKEN_STORAGE);
     var headers = Object.assign({ 'Content-Type': 'application/json' }, (options && options.headers) || {});
-    if (accessToken) headers.Authorization = 'Bearer ' + accessToken;
+    // Tokens HttpOnly via cookies — credentials: 'include' envia cookies automaticamente.
+    // Fallback legado: Authorization header se token ainda existir no localStorage.
+    var legacyToken = localStorage.getItem(CONFIG.API_TOKEN_STORAGE);
+    if (legacyToken) headers.Authorization = 'Bearer ' + legacyToken;
 
-    return fetch(base + path, Object.assign({ headers: headers }, options || {})).then(function(res) {
+    return fetch(base + path, Object.assign({
+      headers: headers,
+      credentials: 'include',
+    }, options || {})).then(function(res) {
       if (res.status === 401 && !_isRetry) {
         return self._refreshAccessToken().then(function(ok) {
           if (!ok) return Promise.reject(Object.assign(new Error('Sessao expirada'), { status: 401 }));
@@ -88,29 +93,29 @@ var DADOS = {
   _refreshAccessToken: function() {
     var self = this;
     var base = this._apiBaseUrl();
-    var refreshToken = localStorage.getItem(CONFIG.API_REFRESH_TOKEN_STORAGE);
-    if (!base || !refreshToken || typeof fetch !== 'function') return Promise.resolve(false);
+    if (!base || typeof fetch !== 'function') return Promise.resolve(false);
 
     return fetch(base + '/api/v1/auth/refresh', {
       method: 'POST',
+      credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ refreshToken: refreshToken })
+      body: '{}',
     }).then(function(res) {
       if (!res.ok) {
         self.encerrarSessao();
         return false;
       }
-      return res.json().then(function(body) {
-        var data = body && body.data ? body.data : null;
-        if (!data || !data.accessToken) { self.encerrarSessao(); return false; }
-        localStorage.setItem(CONFIG.API_TOKEN_STORAGE, data.accessToken);
-        if (data.refreshToken) localStorage.setItem(CONFIG.API_REFRESH_TOKEN_STORAGE, data.refreshToken);
-        return true;
-      });
+      self._limparTokensLegados();
+      return true;
     }).catch(function() {
       self.encerrarSessao();
       return false;
     });
+  },
+
+  _limparTokensLegados: function() {
+    localStorage.removeItem(CONFIG.API_TOKEN_STORAGE);
+    localStorage.removeItem(CONFIG.API_REFRESH_TOKEN_STORAGE);
   },
 
   // Converte campo de transação do formato EN (API) para PT (localStorage)
@@ -311,8 +316,11 @@ var DADOS = {
   },
 
   registrarSessao: function(accessToken, user, refreshToken) {
-    if (accessToken) localStorage.setItem(CONFIG.API_TOKEN_STORAGE, accessToken);
-    if (refreshToken) localStorage.setItem(CONFIG.API_REFRESH_TOKEN_STORAGE, refreshToken);
+    // Tokens em cookies HttpOnly — nunca persistir no localStorage.
+    this._limparTokensLegados();
+    if (accessToken || refreshToken) {
+      console.warn('[DADOS] Tokens recebidos no JS foram ignorados; use cookies HttpOnly.');
+    }
     if (user) localStorage.setItem(CONFIG.API_USER_STORAGE, JSON.stringify(user));
     if (typeof APP_STORE !== 'undefined') {
       APP_STORE.set('dados.sessao', this.getSessao(), { persist: false });
@@ -320,33 +328,55 @@ var DADOS = {
   },
 
   encerrarSessao: function() {
-    // Tenta revogar refresh token no servidor (best-effort)
-    var refreshToken = localStorage.getItem(CONFIG.API_REFRESH_TOKEN_STORAGE);
-    if (refreshToken && this._apiAtiva()) {
-      this._apiFetch('/api/v1/auth/logout', {
+    if (this._apiAtiva()) {
+      var base = this._apiBaseUrl();
+      fetch(base + '/api/v1/auth/logout', {
         method: 'POST',
-        body: JSON.stringify({ refreshToken: refreshToken })
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: '{}',
       }).catch(function() {});
     }
-    localStorage.removeItem(CONFIG.API_TOKEN_STORAGE);
-    localStorage.removeItem(CONFIG.API_REFRESH_TOKEN_STORAGE);
+    this._limparTokensLegados();
     localStorage.removeItem(CONFIG.API_USER_STORAGE);
     if (typeof APP_STORE !== 'undefined') {
-      APP_STORE.set('dados.sessao', { token: null, user: null }, { persist: false });
+      APP_STORE.set('dados.sessao', { user: null }, { persist: false });
     }
   },
 
   getSessao: function() {
     try {
-      var token = localStorage.getItem(CONFIG.API_TOKEN_STORAGE);
       var user = localStorage.getItem(CONFIG.API_USER_STORAGE);
       return {
-        token: token || null,
-        user: user ? JSON.parse(user) : null
+        token: null,
+        user: user ? JSON.parse(user) : null,
       };
     } catch (e) {
       return { token: null, user: null };
     }
+  },
+
+  validarSessaoApi: function() {
+    var self = this;
+    if (!this._apiAtiva()) return Promise.resolve(!!this.getSessao().user);
+    return fetch(this._apiBaseUrl() + '/api/v1/auth/me', {
+      method: 'GET',
+      credentials: 'include',
+    }).then(function(res) {
+      if (!res.ok) {
+        self.encerrarSessao();
+        return false;
+      }
+      return res.json().then(function(body) {
+        if (body && body.data) {
+          self.registrarSessao(null, body.data, null);
+          return true;
+        }
+        return false;
+      });
+    }).catch(function() {
+      return false;
+    });
   },
 
   loginApi: function(email, password) {
@@ -356,8 +386,8 @@ var DADOS = {
       body: JSON.stringify({ email: email, password: password })
     }).then(function(resp) {
       var data = resp && resp.data ? resp.data : null;
-      if (data && data.accessToken) {
-        self.registrarSessao(data.accessToken, data.user, data.refreshToken);
+      if (data && data.user) {
+        self.registrarSessao(null, data.user, null);
       }
       return data;
     });
@@ -373,6 +403,7 @@ var DADOS = {
   init: function() {
     if (this._initialized) return;
     this._initialized = true;
+    this._limparTokensLegados();
     if (!localStorage.getItem(CONFIG.STORAGE_TRANSACOES)) {
       localStorage.setItem(CONFIG.STORAGE_TRANSACOES, JSON.stringify([]));
     }

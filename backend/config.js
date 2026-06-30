@@ -20,10 +20,15 @@ const CONFIG = {
   },
 
   auth: {
-    accessSecret: process.env.JWT_ACCESS_SECRET || 'dev-access-secret',
-    refreshSecret: process.env.JWT_REFRESH_SECRET || 'dev-refresh-secret',
+    accessSecret: isProd
+      ? required('JWT_ACCESS_SECRET')
+      : (process.env.JWT_ACCESS_SECRET || 'dev-access-secret'),
+    refreshSecret: isProd
+      ? required('JWT_REFRESH_SECRET')
+      : (process.env.JWT_REFRESH_SECRET || 'dev-refresh-secret'),
     accessExpiresIn: process.env.JWT_ACCESS_EXPIRES_IN || '15m',
     refreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d',
+    cookieSameSite: process.env.COOKIE_SAME_SITE || 'Lax',
     pbkdf2Iterations: parseInt(process.env.PBKDF2_ITERATIONS) || 100000,
     saltLength: 16,
     issuer: process.env.JWT_ISSUER || 'financaspro-api',
@@ -35,7 +40,7 @@ const CONFIG = {
   cors: {
     origin: process.env.CORS_ORIGIN || (isProd ? null : '*'),
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
     credentials: true,
   },
 

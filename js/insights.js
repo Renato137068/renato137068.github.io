@@ -6,6 +6,14 @@
 
 var INSIGHTS = {
 
+  _esc: function(s) {
+    if (s == null) return '';
+    if (typeof UTILS !== 'undefined' && typeof UTILS.escapeHtml === 'function') {
+      return UTILS.escapeHtml(s);
+    }
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  },
+
   // ─────────────────────────────────────────────────────────────────
   // ANÁLISE PRINCIPAL
   // ─────────────────────────────────────────────────────────────────
@@ -16,6 +24,7 @@ var INSIGHTS = {
    */
   analisar: function() {
     var insights = [];
+    var esc = this._esc.bind(this);
     var txs      = typeof TRANSACOES !== 'undefined' ? TRANSACOES.obter() : (typeof DADOS !== 'undefined' ? DADOS.getTransacoes() : []);
     var agora    = new Date();
     var mesAtual = agora.getMonth() + 1;
@@ -39,7 +48,7 @@ var INSIGHTS = {
         if (Math.abs(variacao) > 15) {
           insights.push({
             tipo:      'variacao',
-            msg:       'Gastos ' + (variacao > 0 ? '📈 aumentaram' : '📉 diminuíram') + ' ' + Math.abs(variacao) + '% em relação ao mês anterior.',
+            msg:       'Gastos ' + (variacao > 0 ? '<i data-lucide="trending-up" aria-hidden="true"></i> aumentaram' : '<i data-lucide="trending-down" aria-hidden="true"></i> diminuíram') + ' ' + Math.abs(variacao) + '% em relação ao mês anterior.',
             gravidade: Math.abs(variacao) > 40 ? 'alta' : 'media'
           });
         }
@@ -53,13 +62,13 @@ var INSIGHTS = {
         if (proj.saldoProjetado >= 0) {
           insights.push({
             tipo:      'projecao',
-            msg:       '📅 Projeção: você vai fechar o mês com saldo de +R$ ' + proj.saldoProjetado.toFixed(2).replace('.', ',') + '.',
+            msg:       '<i data-lucide="calendar" aria-hidden="true"></i> Projeção: você vai fechar o mês com saldo de +R$ ' + proj.saldoProjetado.toFixed(2).replace('.', ',') + '.',
             gravidade: 'baixa'
           });
         } else {
           insights.push({
             tipo:      'projecao',
-            msg:       '📅 Projeção: no ritmo atual, saldo negativo de –R$ ' + Math.abs(proj.saldoProjetado).toFixed(2).replace('.', ',') + ' ao fim do mês.',
+            msg:       '<i data-lucide="calendar" aria-hidden="true"></i> Projeção: no ritmo atual, saldo negativo de –R$ ' + Math.abs(proj.saldoProjetado).toFixed(2).replace('.', ',') + ' ao fim do mês.',
             gravidade: 'alta'
           });
         }
@@ -71,10 +80,10 @@ var INSIGHTS = {
     if (topCats.length > 0) {
       var top = topCats[0];
       if (top.percentual >= 35) {
-        var catLabel = (typeof CONFIG !== 'undefined' && CONFIG.getCatLabel) ? CONFIG.getCatLabel(top.categoria) : top.categoria;
+        var catLabel = esc((typeof CONFIG !== 'undefined' && CONFIG.getCatLabel) ? CONFIG.getCatLabel(top.categoria) : top.categoria);
         insights.push({
           tipo:      'concentracao',
-          msg:       '📌 ' + Math.round(top.percentual) + '% dos gastos em ' + catLabel + ' (R$ ' + top.total.toFixed(2).replace('.', ',') + ').',
+          msg:       '<i data-lucide="map-pin" aria-hidden="true"></i> ' + Math.round(top.percentual) + '% dos gastos em ' + catLabel + ' (R$ ' + top.total.toFixed(2).replace('.', ',') + ').',
           gravidade: top.percentual >= 50 ? 'alta' : 'media'
         });
       }
@@ -101,11 +110,11 @@ var INSIGHTS = {
           insights.push({
             tipo:       'orcamento',
             categoria:  cat,
-            msg:        (CONFIG && CONFIG.getCatLabel ? CONFIG.getCatLabel(cat) : cat) + ' excedido em ' + pct + '%.',
+            msg:        esc(CONFIG && CONFIG.getCatLabel ? CONFIG.getCatLabel(cat) : cat) + ' excedido em ' + pct + '%.',
             gravidade:  'alta',
             acao:       'aumentarLimite',
             parametros: { categoria: cat, novoLimite: Math.round(resumoCat[cat].despesa * 1.2 * 100) / 100 },
-            botao:      '⬆️ Ajustar limite'
+            botao:      '<i data-lucide="arrow-up" aria-hidden="true"></i> Ajustar limite'
           });
         }
       });
@@ -117,7 +126,7 @@ var INSIGHTS = {
     if (saude.score < 50) {
       insights.push({
         tipo:      'saude',
-        msg:       '💪 Saúde financeira: ' + saude.score + '/100 (' + saude.nivel + '). ' +
+        msg:       '<i data-lucide="heart-pulse" aria-hidden="true"></i> Saúde financeira: ' + saude.score + '/100 (' + saude.nivel + '). ' +
                    saude.detalhes.filter(function(d) { return !d.ok; }).map(function(d) { return d.item; }).join(', ') + '.',
         gravidade: saude.score < 30 ? 'alta' : 'media'
       });
@@ -127,7 +136,7 @@ var INSIGHTS = {
     if (saude.score >= 70) {
       insights.push({
         tipo:      'reforco',
-        msg:       '🎉 Parabéns! Saúde financeira em ' + saude.score + '/100 — continue assim!',
+        msg:       '<i data-lucide="party-popper" aria-hidden="true"></i> Parabéns! Saúde financeira em ' + saude.score + '/100 — continue assim!',
         gravidade: 'baixa'
       });
     }
@@ -145,7 +154,7 @@ var INSIGHTS = {
     if (gastoHoje > mediaDesp * 2 && gastoHoje > 50) {
       insights.push({
         tipo:      'padrao',
-        msg:       '⚡ Gasto alto hoje: R$ ' + gastoHoje.toFixed(2).replace('.', ',') + ' (mais que o dobro da média por transação).',
+        msg:       '<i data-lucide="zap" aria-hidden="true"></i> Gasto alto hoje: R$ ' + gastoHoje.toFixed(2).replace('.', ',') + ' (mais que o dobro da média por transação).',
         gravidade: 'media'
       });
     }
@@ -155,11 +164,11 @@ var INSIGHTS = {
     padroesRec.slice(0, 2).forEach(function(p) {
       insights.push({
         tipo:       'recorrencia',
-        msg:        '🔁 "' + p.descricao + '" aparece há ' + p.meses + ' meses (média R$ ' + p.valorMedio.toFixed(2).replace('.', ',') + ').',
+        msg:        '<i data-lucide="refresh-cw" aria-hidden="true"></i> "' + esc(p.descricao) + '" aparece há ' + p.meses + ' meses (média R$ ' + p.valorMedio.toFixed(2).replace('.', ',') + ').',
         gravidade:  'media',
         acao:       'marcarRecorrente',
         parametros: { descricao: p.descricao },
-        botao:      '🔁 Marcar recorrente'
+        botao:      '<i data-lucide="refresh-cw" aria-hidden="true"></i> Marcar recorrente'
       });
     });
 
@@ -168,19 +177,19 @@ var INSIGHTS = {
     if (prev.taxaPoupancaMedia < 0 && prev.tendencia !== 'insuficiente') {
       insights.push({
         tipo:      'poupanca',
-        msg:       '⚠️ Taxa de poupança média negativa. Você tem gastado mais do que ganha.',
+        msg:       '<i data-lucide="alert-triangle" aria-hidden="true"></i> Taxa de poupança média negativa. Você tem gastado mais do que ganha.',
         gravidade: 'alta'
       });
     } else if (prev.taxaPoupancaMedia > 0 && prev.taxaPoupancaMedia < 10 && prev.tendencia !== 'insuficiente') {
       insights.push({
         tipo:      'poupanca',
-        msg:       '💡 Taxa de poupança: ' + prev.taxaPoupancaMedia + '%. A recomendação é acima de 20%.',
+        msg:       '<i data-lucide="lightbulb" aria-hidden="true"></i> Taxa de poupança: ' + prev.taxaPoupancaMedia + '%. A recomendação é acima de 20%.',
         gravidade: 'media'
       });
     } else if (prev.taxaPoupancaMedia >= 20 && prev.tendencia !== 'insuficiente') {
       insights.push({
         tipo:      'poupanca',
-        msg:       '✅ Taxa de poupança de ' + prev.taxaPoupancaMedia + '% — acima da meta de 20%!',
+        msg:       '<i data-lucide="check-circle" aria-hidden="true"></i> Taxa de poupança de ' + prev.taxaPoupancaMedia + '% — acima da meta de 20%!',
         gravidade: 'baixa'
       });
     }
@@ -189,10 +198,10 @@ var INSIGHTS = {
     if (typeof AI_ENGINE.sugestaoCorte === 'function') {
       var corte = AI_ENGINE.sugestaoCorte(txs, 0.20);
       if (corte && corte.corteNecessario > 0 && corte.categoriaAlvo) {
-        var catLabel = (typeof CONFIG !== 'undefined' && CONFIG.getCatLabel) ? CONFIG.getCatLabel(corte.categoriaAlvo) : corte.categoriaAlvo;
+        var catLabel = esc((typeof CONFIG !== 'undefined' && CONFIG.getCatLabel) ? CONFIG.getCatLabel(corte.categoriaAlvo) : corte.categoriaAlvo);
         insights.push({
           tipo:      'meta',
-          msg:       '🎯 Reduza R$ ' + corte.corteNecessario.toFixed(2).replace('.', ',') + ' em ' + catLabel + ' para atingir 20% de poupança (você está em ' + corte.taxaAtual + '%).',
+          msg:       '<i data-lucide="target" aria-hidden="true"></i> Reduza R$ ' + corte.corteNecessario.toFixed(2).replace('.', ',') + ' em ' + catLabel + ' para atingir 20% de poupança (você está em ' + corte.taxaAtual + '%).',
           gravidade: 'media'
         });
       }
@@ -204,7 +213,7 @@ var INSIGHTS = {
       var a = anomalias[0];
       insights.push({
         tipo:      'anomalia',
-        msg:       '🔍 Gasto incomum: "' + (a.transacao.descricao || 'Transação') + '" — ' + a.motivo + '.',
+        msg:       '<i data-lucide="search" aria-hidden="true"></i> Gasto incomum: "' + esc(a.transacao.descricao || 'Transação') + '" — ' + esc(a.motivo) + '.',
         gravidade: 'media'
       });
     }
@@ -215,10 +224,10 @@ var INSIGHTS = {
       var maiorVar = compCats.filter(function(c) { return c.variacao !== null && Math.abs(c.variacao) >= 30 && c.atual > 20; });
       if (maiorVar.length > 0) {
         var mv = maiorVar[0];
-        var mvLabel = (typeof CONFIG !== 'undefined' && CONFIG.getCatLabel) ? CONFIG.getCatLabel(mv.categoria) : mv.categoria;
+        var mvLabel = esc((typeof CONFIG !== 'undefined' && CONFIG.getCatLabel) ? CONFIG.getCatLabel(mv.categoria) : mv.categoria);
         insights.push({
           tipo:      'variacao-cat',
-          msg:       (mv.variacao > 0 ? '📈' : '📉') + ' ' + mvLabel + ' ' + (mv.variacao > 0 ? 'subiu' : 'caiu') + ' ' + Math.abs(mv.variacao) + '% em relação ao mês passado (R$ ' + mv.atual.toFixed(2).replace('.', ',') + ').',
+          msg:       (mv.variacao > 0 ? '<i data-lucide="trending-up" aria-hidden="true"></i>' : '<i data-lucide="trending-down" aria-hidden="true"></i>') + ' ' + mvLabel + ' ' + (mv.variacao > 0 ? 'subiu' : 'caiu') + ' ' + Math.abs(mv.variacao) + '% em relação ao mês passado (R$ ' + mv.atual.toFixed(2).replace('.', ',') + ').',
           gravidade: mv.variacao > 50 ? 'alta' : 'media'
         });
       }
@@ -245,7 +254,7 @@ var INSIGHTS = {
     if (!container) return;
 
     if (insights.length === 0) {
-      container.innerHTML = '<div class="insight insight-ok">✅ Sem alertas. Finanças em dia!</div>';
+      container.innerHTML = '<div class="insight insight-ok"><i data-lucide="check-circle" aria-hidden="true"></i> Sem alertas. Finanças em dia!</div>';
       return;
     }
 
@@ -255,7 +264,7 @@ var INSIGHTS = {
     };
 
     var html = insights.map(function(i) {
-      var icon     = i.gravidade === 'alta' ? '⚠️' : i.gravidade === 'media' ? 'ℹ️' : '💡';
+      var icon     = i.gravidade === 'alta' ? '<i data-lucide="alert-triangle" aria-hidden="true"></i>' : i.gravidade === 'media' ? '<i data-lucide="info" aria-hidden="true"></i>' : '<i data-lucide="lightbulb" aria-hidden="true"></i>';
       var conteudo = icon + ' ' + i.msg;
       var botao    = '';
       if (i.acao && i.botao) {
@@ -268,6 +277,9 @@ var INSIGHTS = {
     }).join('');
 
     container.innerHTML = html;
+    if (typeof renderLucideIcons === 'function') {
+      renderLucideIcons(container);
+    }
   },
 
   /**
@@ -284,9 +296,10 @@ var INSIGHTS = {
 
     if (topCats.length === 0) { el.innerHTML = ''; return; }
 
-    var html = '<div class="orc-insights-titulo">📊 Onde vai seu dinheiro este mês</div>' +
-      topCats.map(function(c) {
-        var label = (typeof CONFIG !== 'undefined' && CONFIG.getCatLabel) ? CONFIG.getCatLabel(c.categoria) : c.categoria;
+    var escHtml = this._esc.bind(this);
+
+    var html = topCats.map(function(c) {
+        var label = escHtml((typeof CONFIG !== 'undefined' && CONFIG.getCatLabel) ? CONFIG.getCatLabel(c.categoria) : c.categoria);
         return '<div class="orc-insight-item">' +
           '<span class="orc-insight-cat">' + label + '</span>' +
           '<div class="orc-insight-barra-bg">' +
@@ -296,7 +309,12 @@ var INSIGHTS = {
         '</div>';
       }).join('');
 
+    html = '<div class="orc-insights-titulo"><i data-lucide="bar-chart" aria-hidden="true"></i> Onde vai seu dinheiro este mês</div>' + html;
+
     el.innerHTML = html;
+    if (typeof renderLucideIcons === 'function') {
+      renderLucideIcons(el);
+    }
   }
 };
 

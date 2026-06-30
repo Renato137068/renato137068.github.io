@@ -187,7 +187,7 @@ function togglePinSeguranca() {
       '<input type="password" id="pin-3" maxlength="1" inputmode="numeric" style="width:48px;height:56px;text-align:center;font-size:24px;font-weight:700;border:2px solid var(--border);border-radius:12px;background:var(--bg);color:var(--text-primary)">' +
       '<input type="password" id="pin-4" maxlength="1" inputmode="numeric" style="width:48px;height:56px;text-align:center;font-size:24px;font-weight:700;border:2px solid var(--border);border-radius:12px;background:var(--bg);color:var(--text-primary)">' +
       '</div></div>';
-    fpAlert(html);
+    fpAlert(html, { trustedHtml: true });
     setTimeout(function() {
       var overlay = document.querySelector('.modal-overlay');
       if (!overlay) return;

@@ -16,6 +16,7 @@ import { requestLogger, addTraceContext } from './middleware/requestLogger.js';
 import { globalLimiter } from './middleware/rateLimiter.js';
 import apiRouter from './routes/index.js';
 import healthRouter from './routes/health.js';
+import { BillingService } from './domain/services/billing.service.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT_DIR  = path.join(__dirname, '..');
@@ -64,6 +65,21 @@ app.use(requestLogger);
 
 // ─── Rate limit global ────────────────────────────────────────────────────────
 app.use(globalLimiter);
+
+// ─── Stripe webhook (corpo raw — ANTES de express.json) ───────────────────────
+app.post(
+  '/api/v1/billing/webhook',
+  express.raw({ type: 'application/json' }),
+  async (req, res, next) => {
+    try {
+      const sig = req.headers['stripe-signature'];
+      const result = await BillingService.handleWebhook(req.body, sig);
+      res.json(result);
+    } catch (err) {
+      next(err);
+    }
+  },
+);
 
 // ─── Body parsing ─────────────────────────────────────────────────────────────
 app.use(express.json({ limit: '1mb' }));

@@ -201,7 +201,7 @@ const LIFECYCLE = {
     this._initialized.push(module.name);
 
     if (this._debug) {
-      console.log('[LIFECYCLE] ✓', module.name, '(' + module.duration.toFixed(2) + 'ms)');
+      console.log('[LIFECYCLE] <i data-lucide="check"></i>', module.name, '(' + module.duration.toFixed(2) + 'ms)');
     }
   },
 

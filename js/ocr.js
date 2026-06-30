@@ -35,9 +35,12 @@ var OCR = {
     btn.className = 'er-btn ocr-btn';
     btn.title     = 'Escanear comprovante (OCR)';
     btn.setAttribute('aria-label', 'Escanear comprovante');
-    btn.innerHTML = '📷';
+    btn.innerHTML = '<i data-lucide="camera" aria-hidden="true"></i>';
     btn.addEventListener('click', this.abrirScanner.bind(this));
     wrapper.appendChild(btn);
+    if (typeof renderLucideIcons === 'function') {
+      renderLucideIcons(btn);
+    }
   },
 
   _configurarInputFile: function() {
@@ -82,12 +85,12 @@ var OCR = {
   processarImagem: function(file) {
     if (this._processando || !file) return;
     if (!file.type.startsWith('image/')) {
-      this._mostrarFeedback('⚠️ Selecione uma imagem válida.', 'erro');
+      this._mostrarFeedback('<i data-lucide="alert-triangle" aria-hidden="true"></i> Selecione uma imagem válida.', 'erro');
       return;
     }
 
     this._processando = true;
-    this._mostrarFeedback('🔍 Analisando imagem...', 'info');
+    this._mostrarFeedback('<i data-lucide="search" aria-hidden="true"></i> Analisando imagem...', 'info');
 
     var self = this;
     this._lerArquivo(file)
@@ -194,11 +197,11 @@ var OCR = {
     var self = this;
     return this._carregarTesseract().then(function(Tesseract) {
       if (!Tesseract) return self._extrairHeuristico(canvas);
-      self._mostrarFeedback('🔍 Reconhecendo texto (OCR)...', 'info');
+      self._mostrarFeedback('<i data-lucide="search" aria-hidden="true"></i> Reconhecendo texto (OCR)...', 'info');
       return Tesseract.recognize(canvas, 'por', {
         logger: function(m) {
           if (m.status === 'recognizing text') {
-            self._mostrarFeedback('🔍 OCR: ' + Math.round((m.progress || 0) * 100) + '%...', 'info');
+            self._mostrarFeedback('<i data-lucide="search" aria-hidden="true"></i> OCR: ' + Math.round((m.progress || 0) * 100) + '%...', 'info');
           }
         }
       }).then(function(result) {
@@ -364,7 +367,7 @@ var OCR = {
     var campo = resultado.valor
       ? 'R$ ' + resultado.valor.toFixed(2).replace('.', ',')
       : resultado.descricao || '?';
-    this._mostrarFeedback('✅ Comprovante lido: ' + campo, 'sucesso');
+    this._mostrarFeedback('<i data-lucide="check-circle" aria-hidden="true"></i> Comprovante lido: ' + campo, 'sucesso');
   },
 
   _formatarDataParaEntrada: function(dataIso) {
@@ -381,7 +384,7 @@ var OCR = {
 
   _mostrarFeedbackManual: function(textoOcr) {
     this._mostrarFeedback(
-      '⚠️ Não consegui ler automaticamente. ' +
+      '<i data-lucide="alert-triangle" aria-hidden="true"></i> Não consegui ler automaticamente. ' +
       (textoOcr ? 'Verifique o texto abaixo e ajuste manualmente.' : 'Digite os dados manualmente.'),
       'aviso'
     );

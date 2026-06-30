@@ -810,7 +810,7 @@ const INIT_CONFIG = {
       '</div>' +
       '</div>';
     
-    INIT_MODALS.fpAlert(html);
+    INIT_MODALS.fpAlert(html, { trustedHtml: true });
     
     setTimeout(function() {
       var overlay = document.querySelector('.modal-overlay');
@@ -1082,7 +1082,7 @@ const INIT_CONFIG = {
     
     html += '</div>';
     
-    INIT_MODALS.fpAlert(html);
+    INIT_MODALS.fpAlert(html, { trustedHtml: true });
     
     setTimeout(function() {
       var overlay = document.querySelector('.modal-overlay');
@@ -1124,7 +1124,7 @@ const INIT_CONFIG = {
       '</div>' +
       '</div>';
     
-    INIT_MODALS.fpAlert(html);
+    INIT_MODALS.fpAlert(html, { trustedHtml: true });
     
     setTimeout(function() {
       var overlay = document.querySelector('.modal-overlay');

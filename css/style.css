@@ -41,9 +41,11 @@
 @import './themes/dark-mode.css';
 
 /* ── Utilitários ──────────────────────────────────────────── */
-@import './utilities/accessibility.css';
-@import './utilities/responsive.css';
+@import url('./utilities/accessibility.css');
+@import url('./utilities/responsive.css');
+@import url('./utilities/breakpoints.css');
 @import './utilities/performance.css';
+@import './utilities/ux-polish.css';
 
 /* ── Fase 8: IA Nativa ────────────────────────────────────── */
 @import './features/ia.css';

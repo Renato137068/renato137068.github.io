@@ -89,8 +89,8 @@ const INIT_EXTRATO = {
       switch(e.key.toLowerCase()) {
         case 'f':
           e.preventDefault();
-          var buscaInput = document.getElementById('extrato-busca');
-          if (buscaInput) buscaInput.focus();
+          var buscaInputFocus = document.getElementById('extrato-busca');
+          if (buscaInputFocus) buscaInputFocus.focus();
           break;
         case 'arrowleft':
           if (e.altKey) {
@@ -109,8 +109,8 @@ const INIT_EXTRATO = {
           self.state.filtroTipo = 'todos';
           self.state.filtroCat = null;
           self.state.busca = '';
-          var buscaInput = document.getElementById('extrato-busca');
-          if (buscaInput) buscaInput.value = '';
+          var buscaInputReset = document.getElementById('extrato-busca');
+          if (buscaInputReset) buscaInputReset.value = '';
           self.setFiltroTipo('todos');
           break;
       }
@@ -468,10 +468,10 @@ const INIT_EXTRATO = {
     });
 
     var trendValue = 0;
-    var trendIcon = '📈';
+    var trendIcon = '<i data-lucide="trending-up" aria-hidden="true"></i>';
     if (saldoAnterior !== 0) {
       trendValue = ((saldo - saldoAnterior) / Math.abs(saldoAnterior)) * 100;
-      trendIcon = trendValue >= 0 ? '📈' : '📉';
+      trendIcon = trendValue >= 0 ? '<i data-lucide="trending-up" aria-hidden="true"></i>' : '<i data-lucide="trending-down" aria-hidden="true"></i>';
     }
 
     var trendEl = document.getElementById('trend-value');
@@ -646,18 +646,18 @@ const INIT_EXTRATO = {
       
       if (btnEdit) {
         e.stopPropagation();
-        var id = btnEdit.dataset.id;
-        INIT_EXTRATO.editarTransacao(id);
+        var editId = btnEdit.dataset.id;
+        INIT_EXTRATO.editarTransacao(editId);
       } else if (btnDel) {
         e.stopPropagation();
-        var id = btnDel.dataset.id;
-        INIT_EXTRATO.deletarTransacao(id);
+        var deleteId = btnDel.dataset.id;
+        INIT_EXTRATO.deletarTransacao(deleteId);
       } else if (btnCarregarMais) {
         e.stopPropagation();
         INIT_EXTRATO._carregarMais(txs);
       } else if (txItem && !btnEdit && !btnDel) {
-        var id = txItem.dataset.id;
-        INIT_EXTRATO.editarTransacao(id);
+        var itemId = txItem.dataset.id;
+        INIT_EXTRATO.editarTransacao(itemId);
       }
     });
   },
@@ -692,8 +692,18 @@ const INIT_EXTRATO = {
    * Renderiza estado vazio premium
    */
   _renderEmptyState: function() {
-    return '<div class="empty-state">' +
-      '<div class="empty-state-icon">📋</div>' +
+    if (typeof UI !== 'undefined' && UI.EmptyState && typeof UI.EmptyState.render === 'function') {
+      var el = UI.EmptyState.render({
+        titulo: 'Nenhuma movimentação encontrada',
+        subtitulo: 'Tente ajustar os filtros ou selecionar outro intervalo de período.',
+        animado: true,
+      });
+      if (el) {
+        el.setAttribute('role', 'status');
+        return el.outerHTML;
+      }
+    }
+    return '<div class="empty-state" role="status">' +
       '<div class="empty-state-title">Nenhuma movimentação encontrada</div>' +
       '<div class="empty-state-message">Tente ajustar os filtros ou selecionar outro intervalo de período.</div>' +
     '</div>';
@@ -750,18 +760,18 @@ const INIT_EXTRATO = {
       
       if (btnEdit) {
         e.stopPropagation();
-        var id = btnEdit.dataset.id;
-        INIT_EXTRATO.editarTransacao(id);
+        var editId = btnEdit.dataset.id;
+        INIT_EXTRATO.editarTransacao(editId);
       } else if (btnDel) {
         e.stopPropagation();
-        var id = btnDel.dataset.id;
-        INIT_EXTRATO.deletarTransacao(id);
+        var deleteId = btnDel.dataset.id;
+        INIT_EXTRATO.deletarTransacao(deleteId);
       } else if (btnCarregarMais) {
         e.stopPropagation();
         INIT_EXTRATO._carregarMais(txs);
       } else if (txItem && !btnEdit && !btnDel) {
-        var id = txItem.dataset.id;
-        INIT_EXTRATO.editarTransacao(id);
+        var itemId = txItem.dataset.id;
+        INIT_EXTRATO.editarTransacao(itemId);
       }
     });
   },
@@ -864,18 +874,18 @@ const INIT_EXTRATO = {
       
       // Filtro por data início
       if (filtros.dataInicio) {
-        var dataTx = new Date(t.data + 'T00:00:00');
+        var dataTxInicio = new Date(t.data + 'T00:00:00');
         var dataInicio = new Date(filtros.dataInicio + 'T00:00:00');
-        if (dataTx < dataInicio) {
+        if (dataTxInicio < dataInicio) {
           return false;
         }
       }
       
       // Filtro por data fim
       if (filtros.dataFim) {
-        var dataTx = new Date(t.data + 'T00:00:00');
+        var dataTxFim = new Date(t.data + 'T00:00:00');
         var dataFim = new Date(filtros.dataFim + 'T00:00:00');
-        if (dataTx > dataFim) {
+        if (dataTxFim > dataFim) {
           return false;
         }
       }
@@ -1129,7 +1139,7 @@ const INIT_EXTRATO = {
    * Obtém ícone da categoria
    */
   getCatIcon: function(cat) { 
-    return this.CATEGORIA_ICONES[cat] || this.CATEGORIA_ICONES[cat.toLowerCase()] || '📌'; 
+    return this.CATEGORIA_ICONES[cat] || this.CATEGORIA_ICONES[cat.toLowerCase()] || 'pin'; 
   },
 
   /**
@@ -1142,15 +1152,16 @@ const INIT_EXTRATO = {
 
 // Ícones por categoria
 INIT_EXTRATO.CATEGORIA_ICONES = {
-  'salario': '💰', 'freelance': '💻', 'investimentos': '📈', 'vendas': '🛒',
-  'alimentacao': '🍔', 'transporte': '🚗', 'utilities': '🏠', 'moradia': '🏠',
-  'saude': '💊', 'educacao': '📚', 'entretenimento': '🎮', 'lazer': '🎬',
-  'compras': '🛍️', 'vestuario': '👕', 'viagem': '✈️', 'pet': '🐾',
-  'assinaturas': '📺', 'outro': '📌', 'outros': '📌',
+  'salario': 'wallet', 'freelance': 'laptop', 'investimentos': 'trending-up', 'vendas': 'shopping-cart',
+  'alimentacao': 'utensils', 'transporte': 'car', 'utilities': 'zap', 'moradia': 'home',
+  'saude': 'pill', 'educacao': 'book-open', 'entretenimento': 'gamepad-2', 'lazer': 'film',
+  'compras': 'shopping-bag', 'vestuario': 'shirt', 'viagem': 'plane', 'pet': 'paw',
+  'assinaturas': 'tv', 'outro': 'pin', 'outros': 'pin',
   /* Labels com acento (fallback) */
-  'Salário': '💰', 'Alimentação': '🍔', 'Transporte': '🚗', 'Saúde': '💊',
-  'Educação': '📚', 'Moradia': '🏠', 'Lazer': '🎬', 'Freelance': '💻',
-  'Investimentos': '📈', 'Vendas': '🛒', 'Entretenimento': '🎮', 'Outros': '📌'
+  'Salário': 'wallet', 'Alimentação': 'utensils', 'Transporte': 'car', 'Saúde': 'pill',
+  'Educação': 'book-open', 'Moradia': 'home', 'Lazer': 'film', 'Freelance': 'laptop',
+  'Investimentos': 'trending-up', 'Vendas': 'shopping-cart', 'Entretenimento': 'gamepad-2', 'Outros': 'pin',
+  'Utilidades': 'zap'
 };
 
 // Cores por categoria

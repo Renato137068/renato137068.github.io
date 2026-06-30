@@ -1,4 +1,4 @@
-name: CI — FinançasPro
+name: CI - FinancasPro
 
 on:
   push:
@@ -15,7 +15,7 @@ jobs:
         node-version: [18.x, 20.x]
 
     steps:
-      - name: Checkout código
+      - name: Checkout codigo
         uses: actions/checkout@v4
 
       - name: Setup Node.js ${{ matrix.node-version }}
@@ -24,17 +24,27 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: npm
 
-      - name: Instalar dependências
+      - name: Instalar dependencias
         run: npm ci
 
-      - name: Lint (não-bloqueante)
+      - name: Lint
         run: npm run lint
+
+      - name: Auditoria de dependencias
+        run: npm audit --audit-level=high
         continue-on-error: true
 
-      - name: Testes com cobertura
+      - name: Testes
         run: npm run test:ci
 
-      - name: Upload relatório de cobertura
+      - name: Build
+        run: npm run build
+
+      - name: Gerar relatorio de cobertura
+        if: matrix.node-version == '20.x'
+        run: npm run test:coverage
+
+      - name: Upload relatorio de cobertura
         if: matrix.node-version == '20.x'
         uses: actions/upload-artifact@v4
         with:
@@ -51,7 +61,7 @@ jobs:
       - name: Verificar resultado dos testes
         run: |
           if [ "${{ needs.test.result }}" != "success" ]; then
-            echo "Testes falharam — pipeline bloqueado"
+            echo "Testes falharam - pipeline bloqueado"
             exit 1
           fi
           echo "Todos os testes passaram"

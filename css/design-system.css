@@ -5,8 +5,128 @@
  */
 
 /* ============================================================
-   DESIGN TOKENS
+   DESIGN SYSTEM - FinançasPro
    ============================================================ */
+
+/* Lucide Icons SVG Styling */
+i[data-lucide] {
+  display: inline-block;
+  vertical-align: middle;
+  width: 1em;
+  height: 1em;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+
+/* Ícones em elementos com tamanho específico */
+.saldo-emoji i[data-lucide],
+.nav-emoji i[data-lucide],
+.card-label i[data-lucide],
+.auth-logo i[data-lucide],
+.sidebar-logo i[data-lucide] {
+  width: 1.25em;
+  height: 1.25em;
+}
+
+/* Ícones em botões */
+button i[data-lucide] {
+  pointer-events: none;
+}
+
+/* Ícones em headings */
+.secao-titulo i[data-lucide] {
+  margin-right: 0.5em;
+}
+
+/* Ícones em labels de formulário */
+label i[data-lucide] {
+  margin-right: 0.5em;
+}
+
+/* Rotação de chevron-down em toggles expandidos */
+.toggle-arrow.expanded i[data-lucide="chevron-down"] {
+  transform: rotate(180deg);
+  transition: transform 0.3s ease;
+}
+
+.toggle-arrow i[data-lucide="chevron-down"] {
+  transition: transform 0.3s ease;
+}
+
+/* Contraste para ícones em fundos coloridos */
+.card.receita i[data-lucide],
+.card.despesa i[data-lucide],
+.kpi-card-premium.receita i[data-lucide],
+.kpi-card-premium.despesa i[data-lucide] {
+  color: white;
+}
+
+.tipo-btn i[data-lucide] {
+  color: inherit;
+}
+
+/* Tamanhos responsivos para ícones */
+@media (max-width: 768px) {
+  .saldo-emoji i[data-lucide],
+  .nav-emoji i[data-lucide],
+  .card-label i[data-lucide] {
+    width: 1.1em;
+    height: 1.1em;
+  }
+  
+  .sidebar-logo i[data-lucide] {
+    width: 1em;
+    height: 1em;
+  }
+}
+
+@media (max-width: 480px) {
+  .saldo-emoji i[data-lucide],
+  .nav-emoji i[data-lucide],
+  .card-label i[data-lucide] {
+    width: 1em;
+    height: 1em;
+  }
+}
+
+/* Tamanhos mínimos para telas de alta densidade */
+i[data-lucide] {
+  min-width: 16px;
+  min-height: 16px;
+}
+
+@media (min-resolution: 2dppx) {
+  i[data-lucide] {
+    min-width: 20px;
+    min-height: 20px;
+  }
+}
+
+/* Animações de feedback para ícones */
+@keyframes checkmark {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.sucesso i[data-lucide="check"] {
+  animation: checkmark 0.3s ease;
+}
+
+/* Feedback visual em hover/focus de botões */
+button:hover i[data-lucide],
+button:focus i[data-lucide] {
+  opacity: 0.8;
+  transform: scale(1.1);
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+button i[data-lucide] {
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
 
 :root {
 

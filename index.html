@@ -5,212 +5,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Controle suas finanças com simplicidade">
   <meta name="theme-color" content="#00723F">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://unpkg.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' http://localhost:4000 https://unpkg.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' http://localhost:4000 https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none';">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
   <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%2300723F' width='180' height='180'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='90' fill='white'>💰</text></svg>">
-  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%2300723F' width='180' height='180'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='90' fill='white'>💰</text></svg>">
+  <link rel="icon" href="icons/logo.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/logo.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/critical-inline.css">
   <link rel="stylesheet" href="css/style.css?v=modular-v2">
   <title>FinançasPro</title>
-  <style>
-    /* Crítico: oculta UI quando PIN está bloqueado para evitar leak visual */
-    html.pin-locked body > header,
-    html.pin-locked body > .sidebar,
-    html.pin-locked body > main,
-    html.pin-locked body > nav,
-    html.pin-locked body > .nav-bottom { visibility: hidden !important; }
-    html.pin-locked body { overflow: hidden; }
-
-    /* Auth UI melhorada - inline para forçar aplicação */
-    .auth-overlay {
-      background: radial-gradient(circle at 30% 20%, rgba(0, 114, 63, 0.12), transparent 40%),
-                  radial-gradient(circle at 70% 80%, rgba(34, 197, 94, 0.08), transparent 35%),
-                  linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%) !important;
-      backdrop-filter: blur(8px) !important;
-      -webkit-backdrop-filter: blur(8px) !important;
-    }
-
-    .auth-card {
-      background: rgba(255, 255, 255, 0.95) !important;
-      border: 1px solid rgba(226, 232, 240, 0.8) !important;
-      border-radius: 16px !important;
-      padding: 32px !important;
-      box-shadow: 0 20px 50px rgba(0, 114, 63, 0.08),
-                 0 8px 25px rgba(0, 0, 0, 0.04),
-                 inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
-      backdrop-filter: blur(12px) !important;
-      -webkit-backdrop-filter: blur(12px) !important;
-      transition: transform 0.3s ease, box-shadow 0.3s ease !important;
-    }
-
-    .auth-card:hover {
-      transform: translateY(-2px) !important;
-      box-shadow: 0 25px 60px rgba(0, 114, 63, 0.12),
-                 0 12px 35px rgba(0, 0, 0, 0.06),
-                 inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
-    }
-
-    .auth-brand {
-      display: flex !important;
-      flex-direction: column !important;
-      align-items: center !important;
-      text-align: center !important;
-      margin-bottom: 24px !important;
-    }
-
-    .auth-logo {
-      width: 64px !important;
-      height: 64px !important;
-      border-radius: 16px !important;
-      background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%) !important;
-      font-size: 32px !important;
-      margin-bottom: 16px !important;
-      animation: logoFloat 3s ease-in-out infinite !important;
-    }
-
-    @keyframes logoFloat {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-4px); }
-    }
-
-    .auth-card h2 {
-      color: #1e293b !important;
-      font-size: 28px !important;
-      font-weight: 700 !important;
-      margin-bottom: 4px !important;
-    }
-
-    .auth-card > p {
-      color: #64748b !important;
-      font-size: 15px !important;
-      text-align: center !important;
-      margin-bottom: 24px !important;
-    }
-
-    .auth-tabs {
-      background: rgba(241, 245, 249, 0.8) !important;
-      border: 1px solid rgba(226, 232, 240, 0.6) !important;
-      border-radius: 12px !important;
-      padding: 3px !important;
-      gap: 2px !important;
-    }
-
-    .auth-tab {
-      background: transparent !important;
-      color: #64748b !important;
-      border-radius: 10px !important;
-      font-weight: 600 !important;
-      font-size: 14px !important;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    }
-
-    .auth-tab.ativo {
-      background: white !important;
-      color: #059669 !important;
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15),
-                 0 1px 3px rgba(0, 0, 0, 0.05) !important;
-      font-weight: 700 !important;
-    }
-
-    .auth-form input {
-      min-height: 52px !important;
-      border: 2px solid #e5e7eb !important;
-      border-radius: 12px !important;
-      background: #ffffff !important;
-      color: #1f2937 !important;
-      font-size: 15px !important;
-      font-weight: 500 !important;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
-    }
-
-    .auth-form input:focus {
-      border-color: #10b981 !important;
-      box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1),
-                 0 4px 12px rgba(16, 185, 129, 0.15) !important;
-      transform: translateY(-1px) !important;
-    }
-
-    .auth-form .btn-primario {
-      min-height: 52px !important;
-      background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
-      border: none !important;
-      border-radius: 12px !important;
-      font-size: 16px !important;
-      font-weight: 700 !important;
-      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.25),
-                 0 4px 12px rgba(16, 185, 129, 0.15) !important;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    }
-
-    .auth-form .btn-primario:hover {
-      transform: translateY(-2px) !important;
-      box-shadow: 0 12px 32px rgba(16, 185, 129, 0.35),
-                 0 6px 16px rgba(16, 185, 129, 0.2) !important;
-    }
-
-    /* Dark theme */
-    [data-theme="dark"] .auth-overlay {
-      background: radial-gradient(circle at 30% 20%, rgba(16, 185, 129, 0.08), transparent 40%),
-                  radial-gradient(circle at 70% 80%, rgba(34, 197, 94, 0.05), transparent 35%),
-                  linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%) !important;
-    }
-
-    [data-theme="dark"] .auth-card {
-      background: rgba(30, 41, 59, 0.95) !important;
-      border: 1px solid rgba(71, 85, 105, 0.4) !important;
-    }
-
-    [data-theme="dark"] .auth-card h2 {
-      color: #f1f5f9 !important;
-    }
-
-    [data-theme="dark"] .auth-card > p {
-      color: #94a3b8 !important;
-    }
-
-    [data-theme="dark"] .auth-tabs {
-      background: rgba(51, 65, 85, 0.4) !important;
-      border: 1px solid rgba(71, 85, 105, 0.3) !important;
-    }
-
-    [data-theme="dark"] .auth-tab {
-      color: #94a3b8 !important;
-    }
-
-    [data-theme="dark"] .auth-tab.ativo {
-      background: rgba(30, 41, 59, 0.9) !important;
-      color: #10b981 !important;
-    }
-
-    [data-theme="dark"] .auth-form input {
-      background: rgba(30, 41, 59, 0.8) !important;
-      border: 2px solid rgba(71, 85, 105, 0.4) !important;
-      color: #f1f5f9 !important;
-    }
-
-    [data-theme="dark"] .auth-form input:focus {
-      border-color: #10b981 !important;
-      box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15),
-                 0 4px 12px rgba(16, 185, 129, 0.25) !important;
-    }
-  </style>
+  <script src="js/utilities/focus-trap.js"></script>
+  <script src="js/utilities/aria-live.js"></script>
   <script src="js/pin-guard.js"></script>
+  <script src="js/vendor/lucide.min.js"></script>
+  <script src="js/lucide-init.js"></script>
 </head>
 <body>
 
-<div id="auth-overlay" class="auth-overlay" style="display:none">
+<div id="auth-overlay" class="auth-overlay" style="display:none" role="dialog" aria-modal="true" aria-labelledby="auth-dialog-title" aria-describedby="auth-message">
   <div class="auth-card">
     <div class="auth-brand">
-      <div class="auth-logo" aria-hidden="true">💰</div>
+      <div class="auth-logo" aria-hidden="true"><i data-lucide="wallet"></i></div>
       <div>
         <p class="auth-kicker">FinançasPro</p>
-        <h2>Acesse sua conta</h2>
+        <h2 id="auth-dialog-title">Acesse sua conta</h2>
       </div>
     </div>
     <p id="auth-message">Entre para continuar seu controle financeiro.</p>
@@ -253,34 +75,34 @@
 
 <!-- HEADER -->
 <header>
-  <h1>💰 FinançasPro</h1>
+  <h1><i data-lucide="wallet"></i> FinançasPro</h1>
 </header>
 
 <!-- SIDEBAR (desktop ≥768px) -->
 <aside class="sidebar" aria-label="Menu lateral">
   <div class="sidebar-brand">
-    <span class="sidebar-logo" aria-hidden="true">💰</span>
+    <span class="sidebar-logo" aria-hidden="true"><i data-lucide="wallet"></i></span>
     <span class="sidebar-title">FinançasPro</span>
   </div>
-  <nav class="sidebar-nav" aria-label="Navegação principal">
+  <nav class="sidebar-nav" aria-label="Menu lateral (desktop)">
     <button class="nav-btn sidebar-btn ativo" data-aba="resumo" data-action="mudar-aba" aria-label="Resumo financeiro" aria-current="page">
-      <span class="nav-emoji" aria-hidden="true">📊</span>
+      <span class="nav-emoji" aria-hidden="true"><i data-lucide="bar-chart"></i></span>
       <span>Resumo</span>
     </button>
     <button class="nav-btn sidebar-btn" data-aba="novo" data-action="mudar-aba" aria-label="Registrar nova transação">
-      <span class="nav-emoji" aria-hidden="true">➕</span>
+      <span class="nav-emoji" aria-hidden="true"><i data-lucide="plus"></i></span>
       <span>Novo Lançamento</span>
     </button>
     <button class="nav-btn sidebar-btn" data-aba="extrato" data-action="mudar-aba" aria-label="Ver extrato">
-      <span class="nav-emoji" aria-hidden="true">📋</span>
+      <span class="nav-emoji" aria-hidden="true"><i data-lucide="clipboard-list"></i></span>
       <span>Extrato</span>
     </button>
     <button class="nav-btn sidebar-btn" data-aba="orcamento" data-action="mudar-aba" aria-label="Orçamento">
-      <span class="nav-emoji" aria-hidden="true">🎯</span>
+      <span class="nav-emoji" aria-hidden="true"><i data-lucide="target"></i></span>
       <span>Orçamento</span>
     </button>
     <button class="nav-btn sidebar-btn" data-aba="config" data-action="mudar-aba" aria-label="Perfil e configurações">
-      <span class="nav-emoji" aria-hidden="true">👤</span>
+      <span class="nav-emoji" aria-hidden="true"><i data-lucide="user"></i></span>
       <span>Perfil</span>
     </button>
   </nav>
@@ -291,6 +113,7 @@
 
   <!-- ABA 1: RESUMO (Dashboard) -->
   <div id="aba-resumo" class="aba ativo">
+    <h2 class="sr-only">Resumo Financeiro</h2>
     <!-- Skeleton: visível durante carregamento inicial, removido após render -->
     <div id="dashboard-skeleton" class="dashboard-skeleton" aria-hidden="true">
       <div class="skeleton sk-greeting"></div>
@@ -312,16 +135,16 @@
       <div class="sk-tx-item"><div class="skeleton sk-tx-icon"></div><div class="sk-tx-body"><div class="skeleton sk-tx-line"></div><div class="skeleton sk-tx-line-short"></div></div><div class="skeleton sk-tx-val"></div></div>
     </div>
     <div id="dashboard-greeting" class="dashboard-greeting"></div>
-    <div id="card-saldo-principal" class="card-saldo-principal" role="status" aria-live="polite" aria-atomic="true"></div>
+    <div id="card-saldo-principal" class="card-saldo-principal" role="status"></div>
     <div id="dashboard-alertas" class="dashboard-alertas"></div>
     <section class="cards-container" aria-label="Resumo de receitas e despesas">
       <div class="card receita">
-        <div class="card-label" aria-hidden="true">💚 Receitas</div>
+        <div class="card-label" aria-hidden="true"><i data-lucide="trending-up"></i> Receitas</div>
         <div class="card-valor" id="resumo-receitas" aria-label="Receitas do mês">R$ 0,00</div>
         <div class="card-comparacao" id="comp-receitas"></div>
       </div>
       <div class="card despesa">
-        <div class="card-label" aria-hidden="true">❤️ Despesas</div>
+        <div class="card-label" aria-hidden="true"><i data-lucide="trending-down"></i> Despesas</div>
         <div class="card-valor" id="resumo-despesas" aria-label="Despesas do mês">R$ 0,00</div>
         <div class="card-comparacao" id="comp-despesas"></div>
       </div>
@@ -332,9 +155,9 @@
     <div id="previsao-mini" class="previsao-mini" aria-live="polite"></div>
 
     <!-- GRÁFICOS (colapsável) -->
-    <button class="dashboard-section-toggle" id="btn-graficos" data-action="toggle-graficos" aria-expanded="false">
-      📊 Análise detalhada
-      <span class="toggle-arrow" id="graficos-arrow">▼</span>
+    <button class="dashboard-section-toggle" id="btn-graficos" data-action="toggle-graficos" aria-expanded="false" aria-controls="graficos-panel">
+      <span aria-hidden="true"><i data-lucide="bar-chart"></i></span> Análise detalhada
+      <span class="toggle-arrow" id="graficos-arrow" aria-hidden="true"><i data-lucide="chevron-down"></i></span>
     </button>
     <div id="graficos-panel" style="display:none">
       <section class="dashboard-section">
@@ -356,9 +179,9 @@
 
     <!-- PREVISÃO FINANCEIRA (Fase 8) -->
     <section class="dashboard-section" id="secao-previsao">
-      <button class="dashboard-section-toggle" id="btn-previsao" data-action="toggle-previsao" aria-expanded="false">
-        🔮 Previsão &amp; Saúde Financeira
-        <span class="toggle-arrow" id="previsao-arrow">▼</span>
+      <button class="dashboard-section-toggle" id="btn-previsao" data-action="toggle-previsao" aria-expanded="false" aria-controls="previsao-painel">
+        <span aria-hidden="true"><i data-lucide="sparkles"></i></span> Previsão &amp; Saúde Financeira
+        <span class="toggle-arrow" id="previsao-arrow" aria-hidden="true"><i data-lucide="chevron-down"></i></span>
       </button>
       <div id="previsao-painel" style="display:none"></div>
     </section>
@@ -366,8 +189,8 @@
     <!-- ALERTAS PAINEL (Fase 8) -->
     <section class="dashboard-section" id="secao-alertas-painel" style="display:none">
       <div class="secao-header">
-        <h2 class="secao-titulo">🔔 Todos os Alertas</h2>
-        <button class="secao-link" type="button" id="btn-fechar-alertas">Fechar ✕</button>
+        <h2 class="secao-titulo"><span aria-hidden="true"><i data-lucide="bell"></i></span> Todos os Alertas</h2>
+        <button class="secao-link" type="button" id="btn-fechar-alertas">Fechar <span aria-hidden="true"><i data-lucide="x"></i></span></button>
       </div>
       <div id="alertas-painel"></div>
     </section>
@@ -400,8 +223,8 @@
 
         <!-- TOGGLE RECEITA / DESPESA -->
         <div class="tipo-toggle" role="group" aria-label="Tipo de transação">
-          <button type="button" class="tipo-btn" data-tipo="receita">💚 Receita</button>
-          <button type="button" class="tipo-btn ativo" data-tipo="despesa">❤️ Despesa</button>
+          <button type="button" class="tipo-btn" data-tipo="receita"><i data-lucide="trending-up"></i> Receita</button>
+          <button type="button" class="tipo-btn ativo" data-tipo="despesa"><i data-lucide="trending-down"></i> Despesa</button>
         </div>
 
         <div class="valor-input-wrapper">
@@ -428,7 +251,7 @@
 
       <!-- 2. DESCRIÇÃO + AUTOCOMPLETE -->
       <div class="form-group">
-        <label for="novo-descricao">📝 Descrição</label>
+        <label for="novo-descricao"><i data-lucide="file-text"></i> Descrição</label>
         <div class="autocomplete-wrapper">
           <input type="text" id="novo-descricao" placeholder="Ex: Supermercado, Salário, Uber..."
                  autocomplete="off" data-autosave="descricao" aria-describedby="desc-error">
@@ -437,7 +260,7 @@
         <div id="desc-error" class="form-error-message"></div>
       </div>
 
-      <div id="ia-deteccao-card" class="ia-deteccao-card ia-empty" aria-live="polite">
+      <div id="ia-deteccao-card" class="ia-deteccao-card ia-empty" aria-live="off">
         <div class="ia-card-top">
           <div class="ia-card-kicker">
             <span class="ia-pulse" aria-hidden="true"></span>
@@ -463,16 +286,16 @@
       </div>
 
       <!-- 3. CATEGORIA (Grid de ícones) -->
-      <div class="form-group">
-        <label>🏷️ Categoria</label>
-        <div id="categoria-grid" class="categoria-grid"></div>
+      <fieldset class="form-group categoria-fieldset">
+        <legend id="categoria-legend"><i data-lucide="tag" aria-hidden="true"></i> Categoria</legend>
+        <div id="categoria-grid" class="categoria-grid" role="radiogroup" aria-labelledby="categoria-legend"></div>
         <input type="hidden" id="novo-categoria" value="">
         <input type="hidden" id="novo-tipo" value="despesa">
-      </div>
+      </fieldset>
 
       <!-- 4. DATA (chips rápidos + input) -->
       <div class="form-group">
-        <label for="novo-data">📅 Data</label>
+        <label for="novo-data"><i data-lucide="calendar"></i> Data</label>
         <div class="data-chips">
           <button type="button" class="data-chip ativo" data-offset="0">Hoje</button>
           <button type="button" class="data-chip" data-offset="1">Ontem</button>
@@ -486,8 +309,8 @@
       <!-- 5. OPÇÕES EXTRAS (recolhidas) -->
       <div class="extras-toggle">
         <button type="button" id="btn-extras" class="btn-extras" aria-expanded="false">
-          ⚙️ Mais opções
-          <span class="extras-arrow" id="extras-arrow">▼</span>
+          <i data-lucide="settings" aria-hidden="true"></i> Mais opções
+          <span class="extras-arrow" id="extras-arrow"><i data-lucide="chevron-down"></i></span>
         </button>
       </div>
 
@@ -496,7 +319,7 @@
         <!-- Banco e Cartão -->
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
           <div class="form-group">
-            <label for="novo-banco">🏦 Banco</label>
+            <label for="novo-banco"><i data-lucide="building"></i> Banco</label>
             <select id="novo-banco" class="form-select">
               <option value="">Sem banco</option>
               <option value="Nubank">Nubank</option>
@@ -507,7 +330,7 @@
             </select>
           </div>
           <div class="form-group">
-            <label for="novo-cartao">💳 Cartão</label>
+            <label for="novo-cartao"><i data-lucide="credit-card"></i> Cartão</label>
             <select id="novo-cartao" class="form-select">
               <option value="">Sem cartão</option>
               <option value="Crédito">Crédito</option>
@@ -530,7 +353,7 @@
           <label class="toggle-label">
             <input type="checkbox" id="chk-recorrente">
             <span class="toggle-slider"></span>
-            <span>🔄 Repetir automaticamente</span>
+            <span><i data-lucide="refresh-cw"></i> Repetir automaticamente</span>
           </label>
           <div id="recorrencia-opcoes" class="recorrencia-opcoes" style="display:none">
             <button type="button" class="rec-chip" data-freq="semanal">Semanal</button>
@@ -545,7 +368,7 @@
           <label class="toggle-label">
             <input type="checkbox" id="chk-parcelado">
             <span class="toggle-slider"></span>
-            <span>💳 Parcelar</span>
+            <span><i data-lucide="credit-card"></i> Parcelar</span>
           </label>
           <div id="parcelas-opcoes" class="parcelas-opcoes" style="display:none">
             <div class="parcelas-input-row">
@@ -561,7 +384,7 @@
           <label class="toggle-label">
             <input type="checkbox" id="chk-continuo">
             <span class="toggle-slider"></span>
-            <span>⚡ Modo contínuo (registrar vários)</span>
+            <span><i data-lucide="zap"></i> Modo contínuo (registrar vários)</span>
           </label>
         </div>
       </div>
@@ -584,7 +407,7 @@
         <span></span><span></span><span></span><span></span><span></span>
       </div>
       <div class="success-content">
-        <div class="success-check">✓</div>
+        <div class="success-check"><i data-lucide="check-circle"></i></div>
         <div class="success-msg" id="success-msg">Registrado!</div>
         <div class="success-saldo" id="success-saldo"></div>
       </div>
@@ -616,7 +439,7 @@
         <div class="saldo-card-header">
           <span class="saldo-label">Saldo do período</span>
           <div class="saldo-trend" id="saldo-trend" aria-label="Tendência vs mês anterior">
-            <span class="trend-icon" id="trend-icon" aria-hidden="true">📈</span>
+            <span class="trend-icon" id="trend-icon" aria-hidden="true"><i data-lucide="trending-up"></i></span>
             <span class="trend-value" id="trend-value">+12.5%</span>
             <span class="trend-label">vs mês anterior</span>
           </div>
@@ -630,21 +453,21 @@
       <!-- Cards Secundários -->
       <div class="kpi-cards-premium" role="group" aria-label="Indicadores financeiros">
         <div class="kpi-card-premium receita" role="status">
-          <div class="kpi-icon" aria-hidden="true">💰</div>
+          <div class="kpi-icon" aria-hidden="true"><i data-lucide="arrow-down-left"></i></div>
           <div class="kpi-content">
             <span class="kpi-label">Entradas</span>
             <span class="kpi-value" id="kpi-entradas" aria-label="Total de entradas">R$ 0,00</span>
           </div>
         </div>
         <div class="kpi-card-premium despesa" role="status">
-          <div class="kpi-icon" aria-hidden="true">💸</div>
+          <div class="kpi-icon" aria-hidden="true"><i data-lucide="trending-down"></i></div>
           <div class="kpi-content">
             <span class="kpi-label">Saídas</span>
             <span class="kpi-value" id="kpi-saidas" aria-label="Total de saídas">R$ 0,00</span>
           </div>
         </div>
         <div class="kpi-card-premium movimentacoes" role="status">
-          <div class="kpi-icon" aria-hidden="true">📊</div>
+          <div class="kpi-icon" aria-hidden="true"><i data-lucide="bar-chart"></i></div>
           <div class="kpi-content">
             <span class="kpi-label">Movimentações</span>
             <span class="kpi-value" id="kpi-movimentacoes" aria-label="Total de movimentações">0</span>
@@ -760,10 +583,11 @@
   <div id="aba-orcamento" class="aba">
     <!-- Renda mensal (se não definida) -->
     <div class="orc-renda-setup" id="orc-renda-setup">
-      <div class="orc-renda-icon">💰</div>
+      <div class="orc-renda-icon"><i data-lucide="coins"></i></div>
       <p class="orc-renda-title">Qual sua renda mensal?</p>
       <p class="orc-renda-desc">Informe para calcular seu orçamento 50/30/20</p>
       <div class="orc-renda-input">
+        <label class="sr-only" for="orc-renda-valor">Renda mensal em reais</label>
         <span class="orc-renda-prefix">R$</span>
         <input type="text" id="orc-renda-valor" placeholder="0,00" inputmode="numeric">
       </div>
@@ -772,52 +596,53 @@
 
     <!-- Dashboard Premium -->
     <div id="orc-dashboard" style="display:none">
+      <div id="orc-live-region" class="sr-only" aria-live="polite" aria-atomic="true"></div>
       <!-- Premium Header Estratégico -->
       <div class="orc-premium-header">
         <!-- KPI Principal -->
         <div class="orc-kpi-main">
           <div class="orc-kpi-main-content">
             <div class="orc-kpi-label">Saldo disponível do orçamento</div>
-            <div class="orc-kpi-value" id="orc-saldo-disponivel" aria-live="polite">R$ 0,00</div>
+            <div class="orc-kpi-value" id="orc-saldo-disponivel">R$ 0,00</div>
             <div class="orc-kpi-meta">
-              <span class="orc-kpi-percent" id="orc-percent-restante" aria-live="polite">0%</span>
+              <span class="orc-kpi-percent" id="orc-percent-restante">0%</span>
               <span class="orc-kpi-separator">•</span>
-              <span class="orc-kpi-trend" id="orc-tendencia" aria-live="polite">vs mês anterior</span>
+              <span class="orc-kpi-trend" id="orc-tendencia">vs mês anterior</span>
             </div>
           </div>
           <div class="orc-kpi-trend-indicator" id="orc-trend-indicator">
-            <span class="trend-icon">📈</span>
+            <span class="trend-icon"><i data-lucide="trending-up" aria-hidden="true"></i></span>
           </div>
         </div>
 
         <!-- KPIs Secundários -->
         <div class="orc-kpi-secondary">
           <div class="orc-kpi-card">
-            <div class="orc-kpi-card-icon">📋</div>
+            <div class="orc-kpi-card-icon"><i data-lucide="clipboard-list" aria-hidden="true"></i></div>
             <div class="orc-kpi-card-content">
               <span class="orc-kpi-card-label">Total planejado</span>
-              <span class="orc-kpi-card-value" id="orc-total-planejado" aria-live="polite">R$ 0,00</span>
+              <span class="orc-kpi-card-value" id="orc-total-planejado">R$ 0,00</span>
             </div>
           </div>
           <div class="orc-kpi-card">
-            <div class="orc-kpi-card-icon">✅</div>
+            <div class="orc-kpi-card-icon"><i data-lucide="check-circle" aria-hidden="true"></i></div>
             <div class="orc-kpi-card-content">
               <span class="orc-kpi-card-label">Total realizado</span>
-              <span class="orc-kpi-card-value" id="orc-total-realizado" aria-live="polite">R$ 0,00</span>
+              <span class="orc-kpi-card-value" id="orc-total-realizado">R$ 0,00</span>
             </div>
           </div>
           <div class="orc-kpi-card">
-            <div class="orc-kpi-card-icon">⚠️</div>
+            <div class="orc-kpi-card-icon"><i data-lucide="alert-triangle" aria-hidden="true"></i></div>
             <div class="orc-kpi-card-content">
               <span class="orc-kpi-card-label">Críticas</span>
-              <span class="orc-kpi-card-value" id="orc-categorias-criticas" aria-live="polite">0</span>
+              <span class="orc-kpi-card-value" id="orc-categorias-criticas">0</span>
             </div>
           </div>
           <div class="orc-kpi-card">
-            <div class="orc-kpi-card-icon">💚</div>
+            <div class="orc-kpi-card-icon"><i data-lucide="trending-up" aria-hidden="true"></i></div>
             <div class="orc-kpi-card-content">
               <span class="orc-kpi-card-label">Economia</span>
-              <span class="orc-kpi-card-value" id="orc-economia-mes" aria-live="polite">R$ 0,00</span>
+              <span class="orc-kpi-card-value" id="orc-economia-mes">R$ 0,00</span>
             </div>
           </div>
         </div>
@@ -847,7 +672,7 @@
           <div class="orc-regra-card-header">
             <div class="orc-regra-card-left">
               <div class="orc-regra-card-icon-wrapper">
-                <span class="orc-regra-card-icon">🏠</span>
+                <span class="orc-edit-renda-icon"><i data-lucide="banknote"></i></span>
               </div>
               <div class="orc-regra-card-info">
                 <span class="orc-regra-card-nome">Necessidades</span>
@@ -860,14 +685,14 @@
           </div>
           <div class="orc-regra-card-body">
             <div class="orc-regra-card-valor-row">
-              <span class="orc-regra-card-gasto" id="orc-nec-gasto" aria-live="polite">R$ 0</span>
-              <span class="orc-regra-card-limite">de <span id="orc-nec-limite" aria-live="polite">R$ 0</span></span>
+              <span class="orc-regra-card-gasto" id="orc-nec-gasto">R$ 0</span>
+              <span class="orc-regra-card-limite">de <span id="orc-nec-limite">R$ 0</span></span>
             </div>
             <div class="orc-progress-premium">
-              <div class="orc-progress-fill-premium" id="orc-nec-bar" aria-live="polite"></div>
+              <div class="orc-progress-fill-premium" id="orc-nec-bar"></div>
             </div>
             <div class="orc-regra-card-meta">
-              <span class="orc-regra-card-percent" id="orc-nec-percent" aria-live="polite">0%</span>
+              <span class="orc-regra-card-percent" id="orc-nec-percent">0%</span>
               <span class="orc-regra-card-label">utilizado</span>
             </div>
           </div>
@@ -880,7 +705,7 @@
           <div class="orc-regra-card-header">
             <div class="orc-regra-card-left">
               <div class="orc-regra-card-icon-wrapper">
-                <span class="orc-regra-card-icon">🎮</span>
+                <span class="orc-edit-renda-icon"><i data-lucide="gamepad-2" aria-hidden="true"></i></span>
               </div>
               <div class="orc-regra-card-info">
                 <span class="orc-regra-card-nome">Desejos</span>
@@ -893,14 +718,14 @@
           </div>
           <div class="orc-regra-card-body">
             <div class="orc-regra-card-valor-row">
-              <span class="orc-regra-card-gasto" id="orc-des-gasto" aria-live="polite">R$ 0</span>
-              <span class="orc-regra-card-limite">de <span id="orc-des-limite" aria-live="polite">R$ 0</span></span>
+              <span class="orc-regra-card-gasto" id="orc-des-gasto">R$ 0</span>
+              <span class="orc-regra-card-limite">de <span id="orc-des-limite">R$ 0</span></span>
             </div>
             <div class="orc-progress-premium">
-              <div class="orc-progress-fill-premium" id="orc-des-bar" aria-live="polite"></div>
+              <div class="orc-progress-fill-premium" id="orc-des-bar"></div>
             </div>
             <div class="orc-regra-card-meta">
-              <span class="orc-regra-card-percent" id="orc-des-percent" aria-live="polite">0%</span>
+              <span class="orc-regra-card-percent" id="orc-des-percent">0%</span>
               <span class="orc-regra-card-label">utilizado</span>
             </div>
           </div>
@@ -913,7 +738,7 @@
           <div class="orc-regra-card-header">
             <div class="orc-regra-card-left">
               <div class="orc-regra-card-icon-wrapper">
-                <span class="orc-regra-card-icon">🐷</span>
+                <span class="orc-edit-renda-icon"><i data-lucide="piggy-bank" aria-hidden="true"></i></span>
               </div>
               <div class="orc-regra-card-info">
                 <span class="orc-regra-card-nome">Poupança</span>
@@ -926,14 +751,14 @@
           </div>
           <div class="orc-regra-card-body">
             <div class="orc-regra-card-valor-row">
-              <span class="orc-regra-card-gasto" id="orc-pou-gasto" aria-live="polite">R$ 0</span>
-              <span class="orc-regra-card-limite">meta <span id="orc-pou-limite" aria-live="polite">R$ 0</span></span>
+              <span class="orc-regra-card-gasto" id="orc-pou-gasto">R$ 0</span>
+              <span class="orc-regra-card-limite">meta <span id="orc-pou-limite">R$ 0</span></span>
             </div>
             <div class="orc-progress-premium poupanca-bar">
-              <div class="orc-progress-fill-premium" id="orc-pou-bar" aria-live="polite"></div>
+              <div class="orc-progress-fill-premium" id="orc-pou-bar"></div>
             </div>
             <div class="orc-regra-card-meta">
-              <span class="orc-regra-card-percent" id="orc-pou-percent" aria-live="polite">0%</span>
+              <span class="orc-regra-card-percent" id="orc-pou-percent">0%</span>
               <span class="orc-regra-card-label">alcançado</span>
             </div>
           </div>
@@ -949,7 +774,7 @@
       <!-- Detalhamento por Categoria Premium -->
       <div class="orc-categorias-section">
         <div class="orc-secao-header-premium">
-          <h3 class="orc-secao-titulo-premium">📊 Detalhes por Categoria</h3>
+          <h3 class="orc-secao-titulo-premium"><i data-lucide="bar-chart"></i> Detalhes por Categoria</h3>
           <button class="orc-toggle-btn-premium" id="orc-cat-toggle" data-action="toggle-detalhes-categorias" aria-expanded="false">
             <span class="toggle-label">Expandir</span>
             <svg class="toggle-icon" id="orc-cat-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -961,7 +786,7 @@
           <!-- Categorias Críticas -->
           <div class="orc-categoria-group" id="orc-group-critical" style="display:none">
             <div class="orc-group-header">
-              <span class="orc-group-icon">⚠️</span>
+              <span class="orc-group-icon"><i data-lucide="alert-triangle"></i></span>
               <span class="orc-group-title">Categorias Críticas</span>
               <span class="orc-group-count" id="orc-critical-count">0</span>
             </div>
@@ -971,7 +796,7 @@
           <!-- Categorias em Atenção -->
           <div class="orc-categoria-group" id="orc-group-attention" style="display:none">
             <div class="orc-group-header">
-              <span class="orc-group-icon">🔔</span>
+              <span class="orc-group-icon"><i data-lucide="bell"></i></span>
               <span class="orc-group-title">Requer Atenção</span>
               <span class="orc-group-count" id="orc-attention-count">0</span>
             </div>
@@ -981,7 +806,7 @@
           <!-- Categorias Saudáveis -->
           <div class="orc-categoria-group" id="orc-group-healthy" style="display:none">
             <div class="orc-group-header">
-              <span class="orc-group-icon">💚</span>
+              <span class="orc-group-icon"><i data-lucide="check-circle"></i></span>
               <span class="orc-group-title">Categorias Saudáveis</span>
               <span class="orc-group-count" id="orc-healthy-count">0</span>
             </div>
@@ -990,7 +815,7 @@
 
           <!-- Empty State para Categorias -->
           <div class="orc-categorias-empty" id="orc-categorias-empty" style="display:none">
-            <div class="orc-empty-icon-premium">📊</div>
+            <div class="orc-empty-icon-premium"><i data-lucide="bar-chart"></i></div>
             <p class="orc-empty-title-premium">Nenhuma categoria configurada</p>
             <p class="orc-empty-desc-premium">Configure seus orçamentos por categoria para começar seu planejamento financeiro.</p>
           </div>
@@ -1510,25 +1335,25 @@
 </main>
 
 <!-- NAV INFERIOR -->
-<nav class="nav-bottom" aria-label="Navegação principal">
+<nav class="nav-bottom" aria-label="Menu inferior (mobile)">
   <button class="nav-btn ativo" data-aba="resumo" data-action="mudar-aba" aria-label="Resumo financeiro" aria-current="page">
-    <span class="nav-emoji" aria-hidden="true">📊</span>
+    <span class="nav-emoji" aria-hidden="true"><i data-lucide="bar-chart"></i></span>
     <span>Resumo</span>
   </button>
   <button class="nav-btn" data-aba="novo" data-action="mudar-aba" aria-label="Registrar nova transação">
-    <span class="nav-emoji" aria-hidden="true">➕</span>
+    <span class="nav-emoji" aria-hidden="true"><i data-lucide="plus"></i></span>
     <span>Novo</span>
   </button>
   <button class="nav-btn" data-aba="extrato" data-action="mudar-aba" aria-label="Ver extrato de transações">
-    <span class="nav-emoji" aria-hidden="true">📋</span>
+    <span class="nav-emoji" aria-hidden="true"><i data-lucide="clipboard-list"></i></span>
     <span>Extrato</span>
   </button>
   <button class="nav-btn" data-aba="orcamento" data-action="mudar-aba" aria-label="Gerenciar orçamento">
-    <span class="nav-emoji" aria-hidden="true">🎯</span>
+    <span class="nav-emoji" aria-hidden="true"><i data-lucide="target"></i></span>
     <span>Orçamento</span>
   </button>
   <button class="nav-btn" data-aba="config" data-action="mudar-aba" aria-label="Perfil e configurações">
-    <span class="nav-emoji" aria-hidden="true">👤</span>
+    <span class="nav-emoji" aria-hidden="true"><i data-lucide="user"></i></span>
     <span>Perfil</span>
   </button>
 </nav>

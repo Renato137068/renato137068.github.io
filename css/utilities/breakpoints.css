@@ -1,0 +1,90 @@
+/**
+ * utilities/breakpoints.css — Standardized breakpoints for responsive design
+ * Use these variables in all CSS files for consistency
+ * Depende de: design-system.css
+ */
+
+/* ── Breakpoint Variables ─────────────────────────────────────── */
+
+:root {
+  /* Mobile-first breakpoints */
+  --bp-mobile-small: 360px;   /* Micro mobile */
+  --bp-mobile: 420px;          /* Small mobile */
+  --bp-mobile-large: 480px;   /* Large mobile */
+  --bp-tablet: 768px;         /* Tablet */
+  --bp-desktop: 1024px;       /* Desktop */
+  --bp-desktop-large: 1280px;  /* Large desktop */
+  --bp-desktop-xl: 1440px;    /* Extra large desktop */
+}
+
+/* ── Standard Media Queries ───────────────────────────────────── */
+
+/* Micro mobile (≤ 360px) */
+@media (max-width: 360px) {
+  /* Adjustments for very small screens */
+}
+
+/* Small mobile (≤ 420px) */
+@media (max-width: 420px) {
+  /* Adjustments for small mobile screens */
+}
+
+/* Large mobile (≤ 480px) */
+@media (max-width: 480px) {
+  /* Adjustments for large mobile screens */
+}
+
+/* Tablet (≥ 768px) */
+@media (min-width: 768px) {
+  /* Tablet and above */
+}
+
+/* Desktop (≥ 1024px) */
+@media (min-width: 1024px) {
+  /* Desktop and above */
+}
+
+/* Large desktop (≥ 1280px) */
+@media (min-width: 1280px) {
+  /* Large desktop and above */
+}
+
+/* Extra large desktop (≥ 1440px) */
+@media (min-width: 1440px) {
+  /* Extra large desktop */
+}
+
+/* ── Helper Classes ───────────────────────────────────────────── */
+
+/* Hide on mobile */
+.hide-mobile {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .hide-mobile {
+    display: block;
+  }
+}
+
+/* Hide on desktop */
+.hide-desktop {
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .hide-desktop {
+    display: none;
+  }
+}
+
+/* Show only on tablet */
+.show-tablet {
+  display: none;
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .show-tablet {
+    display: block;
+  }
+}

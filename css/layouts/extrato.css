@@ -92,27 +92,17 @@
 /* ── Card Principal de Saldo Premium ───────────────────────── */
 
 .saldo-card-premium {
-  background: var(--gradient-green-card);
+  background: var(--color-bg-card);
   border-radius: var(--radius-2xl);
   padding: var(--space-6);
   margin-bottom: var(--space-5);
-  box-shadow: 0 2px 8px rgba(0,0,0,.04),
-              0 8px 24px rgba(0,0,0,.06);
-  border: 1px solid var(--color-border-light);
+  box-shadow: var(--shadow-card-premium);
+  border: 2px solid var(--color-primary-200);
   position: relative;
   overflow: hidden;
 }
 
-.saldo-card-premium::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 200px;
-  height: 200px;
-  background: radial-gradient(circle at top right, rgba(0, 114, 63, 0.06), transparent 70%);
-  pointer-events: none;
-}
+/* Removido efeito decorativo para seguir padrão limpo */
 
 .saldo-card-header {
   display: flex;
@@ -134,7 +124,7 @@
   align-items: center;
   gap: var(--space-2);
   padding: var(--space-2) var(--space-3);
-  background: var(--color-success-bg);
+  background: var(--color-primary-50);
   border-radius: var(--radius-lg);
 }
 
@@ -145,7 +135,7 @@
 .trend-value {
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-bold);
-  color: var(--color-success);
+  color: var(--color-primary-600);
 }
 
 .trend-label {
@@ -189,8 +179,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  box-shadow: 0 2px 8px rgba(0,0,0,.04),
-              0 8px 24px rgba(0,0,0,.06);
+  box-shadow: var(--shadow-card-premium);
   border: 1px solid var(--color-border-light);
   transition: all var(--transition-fast);
   position: relative;
@@ -203,26 +192,26 @@
   left: 0;
   top: 0;
   bottom: 0;
-  width: 4px;
-  background: var(--color-border);
+  width: 3px;
+  background: var(--color-border-light);
 }
 
 .kpi-card-premium:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,.08),
-              0 12px 32px rgba(0,0,0,.06);
+  box-shadow: var(--shadow-card-hover);
+  border-color: var(--color-primary-200);
 }
 
 .kpi-card-premium.receita::before {
-  background: var(--color-success);
+  background: var(--color-primary-200);
 }
 
 .kpi-card-premium.despesa::before {
-  background: var(--color-danger);
+  background: var(--color-danger-light);
 }
 
 .kpi-card-premium.movimentacoes::before {
-  background: var(--color-primary-500);
+  background: var(--color-primary-300);
 }
 
 .kpi-icon {
@@ -238,15 +227,18 @@
 }
 
 .kpi-card-premium.receita .kpi-icon {
-  background: rgba(16, 185, 129, 0.1);
+  background: var(--color-bg-primary);
+  color: var(--color-primary-600);
 }
 
 .kpi-card-premium.despesa .kpi-icon {
-  background: rgba(239, 68, 68, 0.1);
+  background: var(--color-bg-primary);
+  color: var(--color-danger);
 }
 
 .kpi-card-premium.movimentacoes .kpi-icon {
-  background: rgba(0, 114, 63, 0.1);
+  background: var(--color-bg-primary);
+  color: var(--color-primary-600);
 }
 
 .kpi-content {
@@ -272,7 +264,7 @@
 }
 
 .kpi-card-premium.receita .kpi-value {
-  color: var(--color-success);
+  color: var(--color-primary-600);
 }
 
 .kpi-card-premium.despesa .kpi-value {
@@ -501,7 +493,6 @@
   background: var(--color-primary-500);
   color: var(--color-text-inverse);
   border-color: var(--color-primary-500);
-  box-shadow: var(--shadow-primary-sm);
 }
 
 .filtros-categoria-premium {
@@ -664,13 +655,13 @@
 }
 
 .ext-grupo-subtotal.positivo {
-  color: var(--color-success);
-  background: rgba(16, 185, 129, 0.1);
+  color: var(--color-primary-600);
+  background: var(--color-primary-50);
 }
 
 .ext-grupo-subtotal.negativo {
   color: var(--color-danger);
-  background: rgba(239, 68, 68, 0.1);
+  background: var(--color-danger-bg);
 }
 
 .ext-grupo-list {
@@ -691,16 +682,14 @@
   position: relative;
   background: var(--color-bg-card);
   border-radius: var(--radius-xl);
-  box-shadow: 0 2px 8px rgba(0,0,0,.04),
-              0 8px 24px rgba(0,0,0,.06);
+  box-shadow: var(--shadow-card-premium);
   border: 1px solid var(--color-border-light);
 }
 
 .ext-tx:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,.08),
-              0 12px 32px rgba(0,0,0,.06);
-  border-color: var(--color-primary-500);
+  box-shadow: var(--shadow-card-hover);
+  border-color: var(--color-primary-200);
 }
 
 .ext-tx:active {
@@ -713,15 +702,16 @@
 }
 
 .ext-tx-icon {
-  width: 52px;
-  height: 52px;
-  border-radius: var(--radius-xl);
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
+  font-size: 20px;
   flex-shrink: 0;
   background: var(--color-bg-primary);
+  color: var(--color-primary-600);
   transition: all var(--transition-fast);
 }
 
@@ -768,7 +758,7 @@
 }
 
 .ext-tx-valor.receita {
-  color: var(--color-success);
+  color: var(--color-primary-600);
 }
 
 .ext-tx-valor.despesa {

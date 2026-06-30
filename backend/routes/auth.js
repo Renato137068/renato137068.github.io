@@ -2,8 +2,10 @@
 import { Router } from 'express';
 import { authenticate } from '../middleware/auth.js';
 import { authLimiter } from '../middleware/rateLimiter.js';
-import { validateBody, registerSchema, loginSchema, refreshSchema } from '../middleware/validate.js';
+import { validateBody, registerSchema, loginSchema } from '../middleware/validate.js';
 import { AuthService } from '../domain/services/auth.service.js';
+import { setAuthCookies, clearAuthCookies, getRefreshToken, getAccessToken } from '../lib/authCookies.js';
+import { verifyAccessToken } from '../lib/jwt.js';
 
 const router = Router();
 
@@ -25,18 +27,46 @@ router.post('/register', authLimiter, validateBody(registerSchema), async (req, 
 router.post('/login', authLimiter, validateBody(loginSchema), async (req, res) => {
   const { email, password } = req.body;
   const result = await AuthService.login(email, password, clientMeta(req));
-  res.json({ data: result });
+  setAuthCookies(res, result);
+  res.json({
+    data: {
+      user: result.user,
+      // Tokens via HttpOnly cookies — não expor ao JavaScript.
+      accessToken: null,
+      refreshToken: null,
+    },
+  });
 });
 
 // POST /api/v1/auth/refresh
-router.post('/refresh', authLimiter, validateBody(refreshSchema), async (req, res) => {
-  const tokens = await AuthService.refresh(req.body.refreshToken, clientMeta(req));
-  res.json({ data: tokens });
+router.post('/refresh', authLimiter, async (req, res) => {
+  const refreshToken = getRefreshToken(req);
+  if (!refreshToken) {
+    return res.status(401).json({ error: 'Refresh token ausente' });
+  }
+  const tokens = await AuthService.refresh(refreshToken, clientMeta(req));
+  setAuthCookies(res, tokens);
+  res.json({
+    data: {
+      accessToken: null,
+      refreshToken: null,
+    },
+  });
 });
 
-// POST /api/v1/auth/logout
-router.post('/logout', authenticate, async (req, res) => {
-  await AuthService.logout(req.user.id, req.body.refreshToken, clientMeta(req));
+// POST /api/v1/auth/logout — limpa cookies mesmo sem sessão válida
+router.post('/logout', async (req, res) => {
+  const refreshToken = getRefreshToken(req);
+  try {
+    const accessToken = getAccessToken(req);
+    if (accessToken && refreshToken) {
+      const payload = verifyAccessToken(accessToken);
+      await AuthService.logout(payload.sub, refreshToken, clientMeta(req));
+    }
+  } catch {
+    // Sessão já expirada — apenas limpar cookies.
+  }
+  clearAuthCookies(res);
   res.json({ ok: true });
 });
 

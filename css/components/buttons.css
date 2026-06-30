@@ -23,7 +23,7 @@
 /* ── Primário ─────────────────────────────────────────────── */
 
 .btn-primario {
-  background: var(--gradient-primary);
+  background: var(--color-primary-500);
   color: var(--color-text-inverse);
   box-shadow: var(--shadow-primary-sm);
   border: none;
@@ -230,7 +230,7 @@
   gap: var(--space-2);
   width: 100%;
   padding: var(--space-4);
-  background: linear-gradient(135deg, #c2410c 0%, #ea580c 100%);
+  background: var(--color-warning);
   color: var(--color-text-inverse);
   border: none;
   border-radius: var(--radius-lg);
@@ -238,7 +238,7 @@
   font-weight: var(--font-weight-bold);
   cursor: pointer;
   transition: all var(--transition-fast);
-  box-shadow: 0 4px 12px rgba(234, 88, 12, 0.25);
+  box-shadow: var(--shadow-sm);
   font-family: var(--font-family-sans);
 }
 

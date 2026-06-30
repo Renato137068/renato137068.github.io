@@ -5,7 +5,6 @@ import { authenticate } from '../middleware/auth.js';
 import { resolveOrg, requireOrgRole } from '../middleware/org.js';
 import { z } from 'zod';
 import { validateBody } from '../middleware/validate.js';
-import express from 'express';
 
 const router = Router();
 
@@ -26,20 +25,7 @@ router.get('/plans', async (_req, res, next) => {
   } catch (err) { next(err); }
 });
 
-// ─── Webhook Stripe (sem auth, corpo raw) ─────────────────────────────────────
-// IMPORTANTE: esta rota usa express.raw() para que a assinatura Stripe funcione.
-// Deve ser registrada ANTES do express.json() global — feito no server.js.
-router.post(
-  '/webhook',
-  express.raw({ type: 'application/json' }),
-  async (req, res, next) => {
-    try {
-      const sig = req.headers['stripe-signature'];
-      const result = await BillingService.handleWebhook(req.body, sig);
-      res.json(result);
-    } catch (err) { next(err); }
-  }
-);
+// ─── Webhook Stripe registrado em server.js (corpo raw) ───────────────────────
 
 // ─── Rotas autenticadas ───────────────────────────────────────────────────────
 router.use(authenticate);

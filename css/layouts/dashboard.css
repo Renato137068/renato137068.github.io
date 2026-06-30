@@ -49,41 +49,21 @@
   overflow: hidden;
   transition: transform var(--transition-normal), box-shadow var(--transition-normal);
   cursor: default;
+  will-change: transform;
 }
 
-/* Brilho interno no canto superior esquerdo */
-.card-saldo-principal::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 60%;
-  bottom: 40%;
-  background: radial-gradient(ellipse at top left, rgba(255,255,255,0.28) 0%, transparent 70%);
-  pointer-events: none;
-}
-
-/* Padrão geométrico sutil no canto direito */
-.card-saldo-principal::after {
-  content: '';
-  position: absolute;
-  right: -20px;
-  top: -20px;
-  width: 140px;
-  height: 140px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.06);
-  pointer-events: none;
-}
+/* Removidos efeitos decorativos para seguir padrão limpo */
 
 .card-saldo-principal.saldo-positivo {
-  background: linear-gradient(135deg, #005c33 0%, #00723f 45%, #10b981 100%);
-  box-shadow: 0 10px 36px rgba(0, 114, 63, 0.38), 0 2px 8px rgba(0, 114, 63, 0.18);
+  background: var(--color-bg-card);
+  border: 2px solid var(--color-primary-200);
+  box-shadow: var(--shadow-card-premium);
 }
 
 .card-saldo-principal.saldo-negativo {
-  background: linear-gradient(135deg, #991b1b 0%, #b91c1c 50%, #ef4444 100%);
-  box-shadow: 0 10px 36px rgba(185, 28, 28, 0.38), 0 2px 8px rgba(185, 28, 28, 0.18);
+  background: var(--color-bg-card);
+  border: 2px solid var(--color-danger);
+  box-shadow: var(--shadow-card-premium);
 }
 
 .card-saldo-principal:hover {
@@ -91,17 +71,25 @@
 }
 
 .card-saldo-principal.saldo-positivo:hover {
-  box-shadow: 0 16px 48px rgba(0, 114, 63, 0.48);
+  border-color: var(--color-primary-500);
+  box-shadow: var(--shadow-card-hover);
 }
 
 .card-saldo-principal.saldo-negativo:hover {
-  box-shadow: 0 16px 48px rgba(185, 28, 28, 0.48);
+  border-color: var(--color-danger-dark);
+  box-shadow: var(--shadow-card-hover);
 }
 
 .saldo-emoji {
-  font-size: 42px;
+  width: var(--saldo-emoji-size, 56px);
+  height: var(--saldo-emoji-size, 56px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg-primary);
+  border-radius: var(--radius-xl);
+  font-size: var(--saldo-emoji-font-size, 28px);
   flex-shrink: 0;
-  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.25));
   position: relative;
   z-index: 1;
 }
@@ -113,21 +101,20 @@
 }
 
 .saldo-label {
-  font-size: var(--font-size-2xs);
+  font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--color-text-muted);
   text-transform: uppercase;
-  letter-spacing: var(--letter-spacing-widest);
+  letter-spacing: var(--letter-spacing-wide);
   margin-bottom: var(--space-1);
 }
 
 .saldo-valor {
   font-size: var(--font-size-3xl);
   font-weight: var(--font-weight-extrabold);
-  color: #ffffff;
-  letter-spacing: -1px;
-  line-height: 1.05;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  color: var(--color-text-primary);
+  letter-spacing: var(--letter-spacing-tight);
+  line-height: 1.1;
 }
 
 /* ── Cards Receita / Despesa ───────────────────────────────── */
@@ -146,6 +133,7 @@
   border: 1px solid var(--color-border-light);
   box-shadow: var(--shadow-xs);
   transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+  will-change: transform;
 }
 
 .card:hover {
@@ -170,18 +158,8 @@
   line-height: 1.15;
 }
 
-.card.receita {
-  background: linear-gradient(160deg, #f0fff8 0%, #ffffff 60%);
-  border-color: rgba(16, 185, 129, 0.18);
-}
-
+/* Cores específicas por tipo de card */
 .card.receita .card-valor { color: #059669; }
-
-.card.despesa {
-  background: linear-gradient(160deg, #fff5f5 0%, #ffffff 60%);
-  border-color: rgba(239, 68, 68, 0.16);
-}
-
 .card.despesa .card-valor { color: #b91c1c; }
 
 .card-comparacao {
@@ -316,32 +294,25 @@
 /* ── Dark mode overrides ────────────────────────────────────── */
 
 [data-theme="dark"] .card-saldo-principal.saldo-positivo {
-  background: linear-gradient(135deg, #003d22 0%, #00723f 55%, #059669 100%);
-}
-
-[data-theme="dark"] .card {
   background: var(--color-bg-dark-card);
-  border-color: rgba(255, 255, 255, 0.07);
+  border-color: var(--color-primary-500);
 }
 
-[data-theme="dark"] .card.receita {
-  background: linear-gradient(160deg, rgba(16, 185, 129, 0.08) 0%, var(--color-bg-dark-card) 60%);
-  border-color: rgba(16, 185, 129, 0.18);
-}
-
+[data-theme="dark"] .card,
+[data-theme="dark"] .card.receita,
 [data-theme="dark"] .card.despesa {
-  background: linear-gradient(160deg, rgba(239, 68, 68, 0.08) 0%, var(--color-bg-dark-card) 60%);
-  border-color: rgba(239, 68, 68, 0.16);
+  background: var(--color-bg-dark-card);
+  border-color: var(--color-border);
 }
 
 [data-theme="dark"] .dashboard-section {
   background: var(--color-bg-dark-card);
-  border-color: rgba(255, 255, 255, 0.07);
+  border-color: var(--color-border);
 }
 
 [data-theme="dark"] .dashboard-section-toggle {
   background: var(--color-bg-dark-card);
-  border-color: rgba(255, 255, 255, 0.07);
+  border-color: var(--color-border);
 }
 
 [data-theme="dark"] .dashboard-section-toggle:hover {

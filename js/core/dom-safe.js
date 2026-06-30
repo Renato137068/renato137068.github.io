@@ -393,8 +393,8 @@ const DOM_SAFE_PATCH = {
           return;
         }
         
-        // Criar items seguros
-        sugestesoes.slice(0, 5).forEach(function(s) {
+        // Criar itens seguros
+        sugestoes.slice(0, 5).forEach(function(s) {
           var item = DOM_SAFE.create('div', {
             attrs: {
               className: 'autocomplete-item',

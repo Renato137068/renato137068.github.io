@@ -279,10 +279,12 @@ const INIT_FORM = {
 
     el.classList.remove('error', 'success');
     if (errorMsg) errorMsg.classList.remove('visible');
+    el.removeAttribute('aria-invalid');
 
     if (!valor) {
       if (el.id === 'novo-valor' || el.id === 'novo-descricao' || el.id === 'novo-data') {
         el.classList.add('error');
+        el.setAttribute('aria-invalid', 'true');
         if (errorMsg) {
           errorMsg.textContent = 'Campo obrigatório';
           errorMsg.classList.add('visible');
@@ -290,6 +292,7 @@ const INIT_FORM = {
       }
     } else {
       el.classList.add('success');
+      el.setAttribute('aria-invalid', 'false');
     }
   },
 
@@ -1329,9 +1332,10 @@ const INIT_FORM = {
 
 // Emojis por categoria
 INIT_FORM.CAT_EMOJIS = {
-  alimentacao: '🍔', transporte: '🚗', moradia: '🏠', saude: '⚕️',
-  educacao: '📚', lazer: '🎬', outro: '📌', outros: '📌',
-  salario: '💰', freelance: '💻', investimentos: '📈', vendas: '🛒'
+  alimentacao: 'utensils', transporte: 'car', moradia: 'home', saude: 'pill',
+  educacao: 'book-open', lazer: 'film', outro: 'pin', outros: 'pin',
+  salario: 'wallet', freelance: 'laptop', investimentos: 'trending-up', vendas: 'shopping-cart',
+  utilities: 'zap'
 };
 
 // Export para compatibilidade

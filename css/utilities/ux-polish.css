@@ -1,0 +1,142 @@
+/* UX polish: ergonomia, acessibilidade e estabilidade visual */
+
+:root {
+  --tap-target-min: 44px;
+  --focus-ring: 0 0 0 3px rgba(0, 114, 63, 0.18);
+}
+
+button,
+[role="button"],
+input,
+select,
+textarea {
+  touch-action: manipulation;
+}
+
+button:focus-visible,
+[role="button"]:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 3px;
+  box-shadow: var(--focus-ring);
+}
+
+.nav-btn,
+.sidebar-btn,
+.periodo-nav-premium,
+.btn-editar-premium,
+.btn-deletar-premium,
+.btn-editar,
+.btn-deletar,
+.btn-busca-avancada,
+.data-chip,
+.filtro-chip-premium,
+.ordenacao-btn,
+.cat-btn {
+  min-width: var(--tap-target-min);
+  min-height: var(--tap-target-min);
+}
+
+.extrato-busca-input {
+  padding-right: 64px;
+}
+
+.extrato-item-premium,
+.ext-tx {
+  min-height: 72px;
+}
+
+.extrato-item-premium {
+  border: 1px solid var(--color-border-light);
+}
+
+.extrato-item-actions,
+.ext-tx-actions {
+  opacity: 1;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .extrato-item-actions,
+  .ext-tx-actions {
+    opacity: 0.42;
+  }
+
+  .extrato-item-premium:hover .extrato-item-actions,
+  .extrato-item-premium:focus-within .extrato-item-actions,
+  .ext-tx:hover .ext-tx-actions,
+  .ext-tx:focus-within .ext-tx-actions {
+    opacity: 1;
+  }
+}
+
+.btn-editar-premium,
+.btn-deletar-premium,
+.btn-editar,
+.btn-deletar {
+  flex: 0 0 auto;
+}
+
+.btn-registrar {
+  bottom: calc(92px + env(safe-area-inset-bottom, 0px));
+}
+
+@media (min-width: 768px) {
+  .btn-registrar {
+    position: static;
+    margin-top: var(--space-5);
+  }
+}
+
+@media (max-width: 480px) {
+  main {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .valor-input {
+    max-width: 180px;
+    font-size: var(--font-size-3xl);
+  }
+
+  .categoria-grid {
+    gap: 10px;
+  }
+
+  .cat-btn {
+    padding: 12px 8px;
+  }
+
+  .extrato-item-premium,
+  .ext-tx {
+    align-items: flex-start;
+  }
+
+  .extrato-item-valor,
+  .ext-tx-valor {
+    min-width: 76px;
+    font-size: var(--font-size-sm);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 1ms !important;
+  }
+}
+
+[data-theme="dark"] button:focus-visible,
+[data-theme="dark"] [role="button"]:focus-visible,
+[data-theme="dark"] a:focus-visible,
+[data-theme="dark"] input:focus-visible,
+[data-theme="dark"] select:focus-visible,
+[data-theme="dark"] textarea:focus-visible {
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.22);
+}

@@ -179,9 +179,9 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--space-5);
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(5, 150, 105, 0.04) 100%);
+  background: var(--color-bg-card);
   border-radius: 20px;
-  border: 1px solid rgba(16, 185, 129, 0.12);
+  border: 1px solid var(--color-border-light);
 }
 
 .orc-kpi-main-content {
@@ -233,13 +233,14 @@
   justify-content: center;
   width: 56px;
   height: 56px;
-  background: rgba(16, 185, 129, 0.12);
+  background: var(--color-bg-primary);
   border-radius: 16px;
   font-size: 28px;
+  color: var(--color-primary-600);
 }
 
 .trend-icon {
-  filter: drop-shadow(0 2px 4px rgba(16, 185, 129, 0.2));
+  filter: none;
 }
 
 /* KPIs Secundários */
@@ -276,9 +277,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-bg-card);
+  background: var(--color-bg-primary);
   border-radius: 12px;
   flex-shrink: 0;
+  color: var(--color-primary-600);
 }
 
 .orc-kpi-card-content {
@@ -445,14 +447,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.05) 100%);
+  background: var(--color-bg-primary);
   border-radius: 14px;
   flex-shrink: 0;
+  color: var(--color-primary-600);
 }
 
 .orc-regra-card-icon {
   font-size: 24px;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+  filter: none;
 }
 
 .orc-regra-card-info {
@@ -658,18 +661,7 @@
   line-height: 1.5;
 }
 
-/* Category-specific colors */
-.orc-regra-card-premium.necessidades .orc-regra-card-icon-wrapper {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.05) 100%);
-}
-
-.orc-regra-card-premium.desejos .orc-regra-card-icon-wrapper {
-  background: linear-gradient(135deg, rgba(236, 72, 153, 0.1) 0%, rgba(219, 39, 119, 0.05) 100%);
-}
-
-.orc-regra-card-premium.poupanca .orc-regra-card-icon-wrapper {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.05) 100%);
-}
+/* Category-specific colors removidos para seguir padrão limpo */
 
 /* ── Regra 50/30/20 cards (legado) ─────────────────────────── */
 
@@ -792,8 +784,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-bg-page);
+  background: var(--color-bg-primary);
   border-radius: 12px;
+  color: var(--color-primary-600);
 }
 
 .orc-insight-text {
@@ -909,6 +902,7 @@
 .orc-group-icon {
   font-size: 22px;
   flex-shrink: 0;
+  color: var(--color-primary-600);
 }
 
 .orc-group-title {
@@ -970,10 +964,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-bg-page);
+  background: var(--color-bg-primary);
   border-radius: 12px;
   font-size: 20px;
   flex-shrink: 0;
+  color: var(--color-primary-600);
 }
 
 .orc-cat-item-info {
@@ -1185,8 +1180,9 @@
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-md);
-  background: var(--color-bg-page);
+  background: var(--color-bg-primary);
   flex-shrink: 0;
+  color: var(--color-primary-600);
 }
 
 .orc-cat-nome {

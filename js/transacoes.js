@@ -66,6 +66,22 @@ var TRANSACOES = {
   },
 
   /**
+   * Sanitiza texto de entrada do usuário antes de persistir.
+   * @param {string} [desc]
+   * @returns {string}
+   */
+  _sanitizarDescricao: function(desc) {
+    if (!desc) return '';
+    if (typeof VALIDATIONS !== 'undefined' && typeof VALIDATIONS.sanitizarTexto === 'function') {
+      return VALIDATIONS.sanitizarTexto(desc);
+    }
+    if (typeof UTILS !== 'undefined' && typeof UTILS.escapeHtml === 'function') {
+      return UTILS.escapeHtml(String(desc).trim());
+    }
+    return String(desc).trim();
+  },
+
+  /**
    * Cria nova transação com validação.
    * @param {'receita'|'despesa'} tipo
    * @param {number|string} valor
@@ -78,6 +94,7 @@ var TRANSACOES = {
    * @throws {Error} se inválida
    */
   criar: function(tipo, valor, categoria, data, descricao, banco, cartao) {
+    descricao = this._sanitizarDescricao(descricao);
     if (typeof CONFIG !== 'undefined' && typeof CONFIG.normalizeCategoriaFinal === 'function') {
       categoria = CONFIG.normalizeCategoriaFinal(categoria, tipo);
     }
@@ -154,6 +171,9 @@ var TRANSACOES = {
   atualizar: function(id, updates) {
     var transacao = this.obterPorId(id);
     if (!transacao) throw new Error('Transacao nao encontrada');
+    if (updates && updates.descricao != null) {
+      updates = Object.assign({}, updates, { descricao: this._sanitizarDescricao(updates.descricao) });
+    }
     var updated = Object.assign({}, transacao, updates);
     var validacao = UTILS.validarTransacao(updated);
     if (!validacao.valido) throw new Error(validacao.erro);

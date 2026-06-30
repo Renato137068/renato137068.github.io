@@ -2,6 +2,7 @@
  * @file utils.js — Utility functions
  * @module UTILS
  * Tier 1. Depende de: config.js
+ * @requires js/utilities/aria-live.js
  */
 
 /**
@@ -90,6 +91,12 @@ var UTILS = {
     toast.setAttribute('role', 'status');
     toast.setAttribute('aria-live', 'polite');
     document.body.appendChild(toast);
+    
+    // Announce to screen readers using aria-live utility
+    if (typeof ariaLive !== 'undefined') {
+      ariaLive.announceToast(mensagem, tipo);
+    }
+    
     setTimeout(function() { toast.classList.add('show'); }, 10);
     setTimeout(function() {
       toast.classList.remove('show');

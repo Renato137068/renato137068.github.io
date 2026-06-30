@@ -78,31 +78,37 @@
 }
 
 .card-saldo-principal.saldo-positivo {
-  background: var(--gradient-primary);
-  border-left: none;
-  box-shadow: var(--shadow-primary);
+  background: var(--color-bg-card);
+  border: 2px solid var(--color-primary-200);
+  box-shadow: var(--shadow-card-premium);
 }
 
 .card-saldo-principal.saldo-negativo {
-  background: var(--gradient-danger);
-  border-left: none;
-  box-shadow: var(--shadow-danger);
+  background: var(--color-bg-card);
+  border: 2px solid var(--color-danger);
+  box-shadow: var(--shadow-card-premium);
 }
 
 .saldo-emoji {
-  font-size: 36px;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg-primary);
+  border-radius: var(--radius-lg);
+  font-size: 24px;
   line-height: 1;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
 .saldo-info { flex: 1; }
 
 .saldo-label {
-  font-size: var(--font-size-2xs);
+  font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
-  color: rgba(255, 255, 255, 0.75);
+  color: var(--color-text-muted);
   text-transform: uppercase;
-  letter-spacing: var(--letter-spacing-wider);
+  letter-spacing: var(--letter-spacing-wide);
   margin-bottom: 2px;
 }
 
@@ -113,7 +119,7 @@
 }
 
 .saldo-positivo .saldo-valor,
-.saldo-negativo .saldo-valor { color: #ffffff; }
+.saldo-negativo .saldo-valor { color: var(--color-text-primary); }
 
 /* ── Dashboard section card ───────────────────────────────── */
 

@@ -21,7 +21,7 @@ var ONBOARDING = (function() {
 
     var passos = [
       {
-        emoji:  '👋',
+        emoji:  '<i data-lucide="hand" aria-hidden="true"></i>',
         titulo: 'Bem-vindo ao FinançasPro!',
         texto:  'Controle financeiro inteligente com IA. Vamos configurar tudo em ' +
                 (renda ? '1 passo rápido' : '2 passos rápidos') + '.',
@@ -31,7 +31,7 @@ var ONBOARDING = (function() {
 
     if (!renda) {
       passos.push({
-        emoji:     '💰',
+        emoji:     '<i data-lucide="wallet" aria-hidden="true"></i>',
         titulo:    'Qual é sua renda mensal?',
         texto:     'Usamos para calcular sua saúde financeira e o orçamento 50/30/20.',
         rendaStep: true,
@@ -40,7 +40,7 @@ var ONBOARDING = (function() {
     }
 
     passos.push({
-      emoji:  '🚀',
+      emoji:  '<i data-lucide="rocket" aria-hidden="true"></i>',
       titulo: 'Tudo pronto para começar!',
       texto:  'Dica: digite <em>"mercado 45 ontem"</em> na entrada rápida — o app entende linguagem natural.',
       navBtn: 'novo',
@@ -158,7 +158,7 @@ var ONBOARDING = (function() {
       '<div class="onb-actions">' +
         skipHtml +
         '<button class="onb-btn-next ripple-host" id="onb-next">' +
-          (ultimo ? '🚀 Começar!' : 'Próximo →') +
+          (ultimo ? '<i data-lucide="rocket" aria-hidden="true"></i> Começar!' : 'Próximo →') +
         '</button>' +
       '</div>';
 
@@ -187,6 +187,9 @@ var ONBOARDING = (function() {
     _tooltip.style.top       = '50%';
     _tooltip.style.transform = 'translate(-50%, -50%)';
     _tooltip.style.bottom    = '';
+    if (typeof renderLucideIcons === 'function') {
+      renderLucideIcons(_tooltip);
+    }
   }
 
   function _avancar() {

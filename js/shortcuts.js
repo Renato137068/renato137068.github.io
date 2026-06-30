@@ -84,7 +84,7 @@ var SHORTCUTS = {
         '<kbd style="background:var(--bg);padding:2px 8px;border-radius:6px;font-family:monospace;font-weight:600;text-align:center">Esc</kbd><span>Fechar modal</span>' +
         '<kbd style="background:var(--bg);padding:2px 8px;border-radius:6px;font-family:monospace;font-weight:600;text-align:center">?</kbd><span>Esta ajuda</span>' +
       '</div></div>';
-    fpAlert(html);
+    fpAlert(html, { trustedHtml: true });
   }
 };
 

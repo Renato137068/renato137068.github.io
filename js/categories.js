@@ -11,29 +11,29 @@ const CATEGORIES = {
    */
   DEFINICOES: {
     // Receitas
-    salario: { label: 'Salário', emoji: '💰', cor: '#10b981', tipo: 'receita' },
-    freelance: { label: 'Freelance', emoji: '💻', cor: '#6366f1', tipo: 'receita' },
-    investimentos: { label: 'Investimentos', emoji: '📈', cor: '#0ea5e9', tipo: 'receita' },
-    vendas: { label: 'Vendas', emoji: '🛒', cor: '#f59e0b', tipo: 'receita' },
-    outros: { label: 'Outros', emoji: '📌', cor: '#94a3b8', tipo: 'receita' },
+    salario: { label: 'Salário', icon: 'wallet', cor: '#10b981', tipo: 'receita' },
+    freelance: { label: 'Freelance', icon: 'laptop', cor: '#6366f1', tipo: 'receita' },
+    investimentos: { label: 'Investimentos', icon: 'trending-up', cor: '#0ea5e9', tipo: 'receita' },
+    vendas: { label: 'Vendas', icon: 'shopping-cart', cor: '#f59e0b', tipo: 'receita' },
+    outros: { label: 'Outros', icon: 'pin', cor: '#94a3b8', tipo: 'receita' },
     
     // Despesas
-    alimentacao: { label: 'Alimentação', emoji: '🍔', cor: '#ef4444', tipo: 'despesa' },
-    transporte: { label: 'Transporte', emoji: '🚗', cor: '#8b5cf6', tipo: 'despesa' },
-    moradia: { label: 'Moradia', emoji: '🏠', cor: '#14b8a6', tipo: 'despesa' },
-    saude: { label: 'Saúde', emoji: '⚕️', cor: '#ec4899', tipo: 'despesa' },
-    educacao: { label: 'Educação', emoji: '📚', cor: '#3b82f6', tipo: 'despesa' },
-    lazer: { label: 'Lazer', emoji: '🎬', cor: '#a855f7', tipo: 'despesa' },
-    outro: { label: 'Outro', emoji: '📌', cor: '#94a3b8', tipo: 'despesa' },
+    alimentacao: { label: 'Alimentação', icon: 'utensils', cor: '#ef4444', tipo: 'despesa' },
+    transporte: { label: 'Transporte', icon: 'car', cor: '#8b5cf6', tipo: 'despesa' },
+    moradia: { label: 'Moradia', icon: 'home', cor: '#14b8a6', tipo: 'despesa' },
+    saude: { label: 'Saúde', icon: 'pill', cor: '#ec4899', tipo: 'despesa' },
+    educacao: { label: 'Educação', icon: 'book-open', cor: '#3b82f6', tipo: 'despesa' },
+    lazer: { label: 'Lazer', icon: 'film', cor: '#a855f7', tipo: 'despesa' },
+    outro: { label: 'Outro', icon: 'pin', cor: '#94a3b8', tipo: 'despesa' },
     
     // Despesas adicionais (mantidas para compatibilidade)
-    entretenimento: { label: 'Entretenimento', emoji: '🎮', cor: '#f97316', tipo: 'despesa' },
-    compras: { label: 'Compras', emoji: '🛍️', cor: '#e11d48', tipo: 'despesa' },
-    vestuario: { label: 'Vestuário', emoji: '👕', cor: '#7c3aed', tipo: 'despesa' },
-    viagem: { label: 'Viagem', emoji: '✈️', cor: '#0284c7', tipo: 'despesa' },
-    pet: { label: 'Pet', emoji: '🐾', cor: '#84cc16', tipo: 'despesa' },
-    assinaturas: { label: 'Assinaturas', emoji: '📺', cor: '#6366f1', tipo: 'despesa' },
-    utilities: { label: 'Utilidades', emoji: '🏠', cor: '#06b6d4', tipo: 'despesa' }
+    entretenimento: { label: 'Entretenimento', icon: 'gamepad-2', cor: '#f97316', tipo: 'despesa' },
+    compras: { label: 'Compras', icon: 'shopping-bag', cor: '#e11d48', tipo: 'despesa' },
+    vestuario: { label: 'Vestuário', icon: 'shirt', cor: '#7c3aed', tipo: 'despesa' },
+    viagem: { label: 'Viagem', icon: 'plane', cor: '#0284c7', tipo: 'despesa' },
+    pet: { label: 'Pet', icon: 'paw', cor: '#84cc16', tipo: 'despesa' },
+    assinaturas: { label: 'Assinaturas', icon: 'tv', cor: '#6366f1', tipo: 'despesa' },
+    utilities: { label: 'Utilidades', icon: 'zap', cor: '#06b6d4', tipo: 'despesa' }
   },
 
   /**
@@ -66,7 +66,7 @@ const CATEGORIES = {
     // Fallback: cria definição básica
     return {
       label: this.formatarLabel(slug),
-      emoji: '📌',
+      icon: 'pin',
       cor: '#94a3b8',
       tipo: this.inferirTipo(slug)
     };
@@ -83,13 +83,13 @@ const CATEGORIES = {
   },
 
   /**
-   * Obtém emoji de uma categoria
+   * Obtém ícone de uma categoria
    * @param {string} slug - Slug da categoria
-   * @returns {string} Emoji
+   * @returns {string} Nome do ícone Lucide
    */
-  getEmoji: function(slug) {
+  getIcon: function(slug) {
     var cat = this.get(slug);
-    return cat ? cat.emoji : '📌';
+    return cat ? cat.icon : 'pin';
   },
 
   /**
@@ -143,7 +143,7 @@ const CATEGORIES = {
       var cat = this.get(slug);
       return {
         value: slug,
-        label: cat.emoji + ' ' + cat.label
+        label: '<i data-lucide="' + cat.icon + '"></i> ' + cat.label
       };
     }.bind(this));
   },
@@ -193,7 +193,7 @@ const CATEGORIES = {
       if (this.customCache[tipo].includes(slug)) {
         return {
           label: slug,
-          emoji: '✨',
+          icon: 'sparkles',
           cor: '#fbbf24',
           tipo: tipo
         };
@@ -386,7 +386,7 @@ const CATEGORIES = {
         var cat = CATEGORIES.get(slug);
         return {
           v: slug,
-          l: cat.emoji + ' ' + cat.label
+          l: '<i data-lucide="' + cat.icon + '"></i> ' + cat.label
         };
       });
     }

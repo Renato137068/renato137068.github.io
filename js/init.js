@@ -731,15 +731,16 @@ function mostrarSucesso(msg) {
 
 /* Ícones por categoria — keys lowercase sem acento (match data-cat) */
 var CATEGORIA_ICONES = {
-  'salario': '💰', 'freelance': '💻', 'investimentos': '📈', 'vendas': '🛒',
-  'alimentacao': '🍔', 'transporte': '🚗', 'utilities': '🏠', 'moradia': '🏠',
-  'saude': '💊', 'educacao': '📚', 'entretenimento': '🎮', 'lazer': '🎬',
-  'compras': '🛍️', 'vestuario': '👕', 'viagem': '✈️', 'pet': '🐾',
-  'assinaturas': '📺', 'outro': '📌', 'outros': '📌',
+  'salario': 'wallet', 'freelance': 'laptop', 'investimentos': 'trending-up', 'vendas': 'shopping-cart',
+  'alimentacao': 'utensils', 'transporte': 'car', 'utilities': 'zap', 'moradia': 'home',
+  'saude': 'pill', 'educacao': 'book-open', 'entretenimento': 'gamepad-2', 'lazer': 'film',
+  'compras': 'shopping-bag', 'vestuario': 'shirt', 'viagem': 'plane', 'pet': 'paw',
+  'assinaturas': 'tv', 'outro': 'pin', 'outros': 'pin',
   /* Labels com acento (fallback) */
-  'Salário': '💰', 'Alimentação': '🍔', 'Transporte': '🚗', 'Saúde': '💊',
-  'Educação': '📚', 'Moradia': '🏠', 'Lazer': '🎬', 'Freelance': '💻',
-  'Investimentos': '📈', 'Vendas': '🛒', 'Entretenimento': '🎮', 'Outros': '📌'
+  'Salário': 'wallet', 'Alimentação': 'utensils', 'Transporte': 'car', 'Saúde': 'pill',
+  'Educação': 'book-open', 'Moradia': 'home', 'Lazer': 'film', 'Freelance': 'laptop',
+  'Investimentos': 'trending-up', 'Vendas': 'shopping-cart', 'Entretenimento': 'gamepad-2', 'Outros': 'pin',
+  'Utilidades': 'zap'
 };
 
 var CATEGORIA_CORES = {
@@ -1076,7 +1077,7 @@ function abrirEdicaoTransacao(id) {
       buildCatOptions(tx.tipo, tx.categoria) +
     '</select></div>' +
   '</div>';
-  fpAlert(html);
+  fpAlert(html, { trustedHtml: true });
   setTimeout(function() {
     var overlay = document.querySelector('.modal-overlay');
     if (!overlay) return;
@@ -1169,7 +1170,7 @@ function editarRendaOrcamento() {
       '</div>' +
     '</div>' +
   '</div>';
-  fpAlert(html);
+  fpAlert(html, { trustedHtml: true });
   setTimeout(function() {
     var overlay = document.querySelector('.modal-overlay');
     if (!overlay) return;
@@ -1236,7 +1237,7 @@ function editarRegra503020() {
       '</div>' +
     '</div>' +
   '</div>';
-  fpAlert(html);
+  fpAlert(html, { trustedHtml: true });
   setTimeout(function() {
     var overlay = document.querySelector('.modal-overlay');
     if (!overlay) return;
@@ -1715,7 +1716,8 @@ function _fpModal(titulo, camposHtml, onSalvar) {
   ov.setAttribute('aria-modal', 'true');
   ov.innerHTML =
     '<div class="modal-box">' +
-      '<p style="font-size:17px;font-weight:700;margin-bottom:18px;color:var(--text)">' + titulo + '</p>' +
+      '<p style="font-size:17px;font-weight:700;margin-bottom:18px;color:var(--text)">' +
+        (typeof UTILS !== 'undefined' ? UTILS.escapeHtml(titulo) : titulo) + '</p>' +
       camposHtml +
       '<div class="modal-actions" style="grid-template-columns:1fr 1fr;margin-top:20px">' +
         '<button class="btn-cancelar" type="button" id="_fpModal-cancel">Cancelar</button>' +
@@ -1807,7 +1809,7 @@ function abrirGerenciarCategorias(tipo) {
     '<input type="text" id="nova-cat-input" placeholder="Nova categoria..." style="flex:1;padding:12px;border:2px solid var(--border);border-radius:10px;font-size:14px;background:var(--bg);color:var(--text-primary)">' +
     '<button data-cat-action="adicionar" data-tipo="' + UTILS.escapeHtml(tipo) + '" style="padding:12px 16px;background:var(--primary);color:#fff;border:none;border-radius:10px;font-weight:600;font-size:14px;cursor:pointer">+</button>' +
     '</div></div>';
-  fpAlert(html);
+  fpAlert(html, { trustedHtml: true });
 
   setTimeout(function() {
     var ov = document.querySelector('.modal-overlay');
@@ -1869,7 +1871,7 @@ function abrirChangelog() {
     '<ul style="font-size:13px;color:var(--text-secondary);padding-left:18px;line-height:1.8">' +
     '<li>Lançamento inicial</li><li>Receitas e despesas</li><li>Armazenamento local</li></ul></div>' +
     '</div></div>';
-  fpAlert(html);
+  fpAlert(html, { trustedHtml: true });
 }
 
 function abrirFeedback() {
@@ -1883,7 +1885,7 @@ function abrirFeedback() {
     '<option value="elogio">⭐ Elogio</option></select>' +
     '<textarea id="feedback-msg" rows="4" placeholder="Descreva aqui..." style="padding:12px;border:2px solid var(--border);border-radius:10px;font-size:14px;resize:none;background:var(--bg);color:var(--text-primary)"></textarea>' +
     '</div></div>';
-  fpAlert(html);
+  fpAlert(html, { trustedHtml: true });
   setTimeout(function() {
     var overlay = document.querySelector('.modal-overlay');
     if (!overlay) return;
@@ -1908,14 +1910,22 @@ function abrirFeedback() {
 /* ============================================
    MODAIS
    ============================================ */
-function fpAlert(htmlContent) {
+function fpAlert(htmlContent, options) {
+  if (typeof INIT_MODALS !== 'undefined' && typeof INIT_MODALS.fpAlert === 'function') {
+    INIT_MODALS.fpAlert(htmlContent, options);
+    return;
+  }
+  options = options || {};
+  var body = options.trustedHtml
+    ? htmlContent
+    : '<p>' + (typeof UTILS !== 'undefined' ? UTILS.escapeHtml(htmlContent) : htmlContent) + '</p>';
   var old = document.querySelector('.modal-overlay');
   if (old) old.remove();
   var ov = document.createElement('div');
   ov.className = 'modal-overlay';
   ov.setAttribute('role','dialog');
   ov.setAttribute('aria-modal','true');
-  ov.innerHTML = '<div class="modal-box">' + htmlContent +
+  ov.innerHTML = '<div class="modal-box">' + body +
     '<div class="modal-actions"><button class="modal-btn btn-principal" type="button">OK</button></div></div>';
   document.body.appendChild(ov);
   var btn = ov.querySelector('.modal-btn');
@@ -1943,12 +1953,49 @@ function fpConfirm(msg, onOk, onNo) {
   var bo = ov.querySelector('#mo');
   var bc = ov.querySelector('#mc');
   bo.focus();
-  bo.addEventListener('click', function() { ov.remove(); if (onOk) onOk(); });
-  bc.addEventListener('click', function() { ov.remove(); if (onNo) onNo(); });
-  ov.addEventListener('click', function(e) { if (e.target === ov) { ov.remove(); if (onNo) onNo(); } });
-  document.addEventListener('keydown', function h(e) {
-    if (e.key === 'Escape') { ov.remove(); if (onNo) onNo(); document.removeEventListener('keydown', h); }
-  });
+  
+  // Named handlers for proper cleanup
+  var okHandler = function() { 
+    ov.remove(); 
+    bc.removeEventListener('click', cancelHandler);
+    ov.removeEventListener('click', overlayHandler);
+    document.removeEventListener('keydown', escapeHandler);
+    if (onOk) onOk(); 
+  };
+  
+  var cancelHandler = function() { 
+    ov.remove(); 
+    bo.removeEventListener('click', okHandler);
+    ov.removeEventListener('click', overlayHandler);
+    document.removeEventListener('keydown', escapeHandler);
+    if (onNo) onNo(); 
+  };
+  
+  var overlayHandler = function(e) { 
+    if (e.target === ov) { 
+      ov.remove(); 
+      bo.removeEventListener('click', okHandler);
+      bc.removeEventListener('click', cancelHandler);
+      document.removeEventListener('keydown', escapeHandler);
+      if (onNo) onNo(); 
+    } 
+  };
+  
+  var escapeHandler = function(e) {
+    if (e.key === 'Escape') { 
+      ov.remove(); 
+      bo.removeEventListener('click', okHandler);
+      bc.removeEventListener('click', cancelHandler);
+      ov.removeEventListener('click', overlayHandler);
+      document.removeEventListener('keydown', escapeHandler);
+      if (onNo) onNo(); 
+    }
+  };
+  
+  bo.addEventListener('click', okHandler);
+  bc.addEventListener('click', cancelHandler);
+  ov.addEventListener('click', overlayHandler);
+  document.addEventListener('keydown', escapeHandler);
 }
 
 /* ============================================
@@ -2509,7 +2556,7 @@ function setupEntradaRapida() {
     atualizarOrcamentoPreview();
 
     var cat = resultado.categoria ? UTILS.labelCategoria(resultado.categoria) : '';
-    var msg  = '✓ ' + (resultado.descricao || texto) + (cat ? ' · ' + cat : '');
+    var msg  = '<i data-lucide="check" aria-hidden="true"></i> ' + (resultado.descricao || texto) + (cat ? ' · ' + cat : '');
     if (resultado.valor) msg += ' · R$ ' + resultado.valor.toFixed(2).replace('.', ',');
     if (feedback) {
       feedback.textContent = msg;
